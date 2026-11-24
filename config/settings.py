@@ -15,6 +15,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'personas',
     'terrenos',
+    'viviendas',
+    'accesos',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
