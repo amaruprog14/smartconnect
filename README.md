@@ -53,7 +53,7 @@ Qué hace cada paso:
 4. `cargar_demo` crea dos personas y tres terrenos relacionados. Se puede repetir sin duplicar estos datos; vuelve a poner sus valores de demostración.
 5. `runserver` inicia la API. Dejen esa terminal abierta. Se detiene con `Ctrl+C`.
 
-La primera vez no necesitan `makemigrations`: las dos migraciones iniciales ya están incluidas. Después de modificar modelos, ejecuten `manage.py makemigrations` y luego `manage.py migrate` usando el Python del entorno.
+La primera vez no necesitan `makemigrations`: las migraciones ya están incluidas en cada app. Después de modificar modelos, ejecuten `manage.py makemigrations` y luego `manage.py migrate` usando el Python del entorno.
 
 ## 4. Confirmar el primer GET
 
@@ -114,18 +114,18 @@ La relación ya implementada es:
 erDiagram
     PERSONA ||--o{ TERRENO : administra
     PERSONA {
-        bigint id PK
+        int id PK
         string codigo UK
         string nombres
         string apellidos
         string email UK
     }
     TERRENO {
-        bigint id PK
+        int id PK
         string codigo UK
         string nombre
         string direccion
-        bigint administrador_id FK
+        int administrador_id FK
     }
 ```
 
