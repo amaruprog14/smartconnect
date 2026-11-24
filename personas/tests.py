@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from rest_framework.test import APITestCase
 from personas.models import Persona
@@ -7,6 +8,11 @@ from terrenos.models import Terreno
 
 
 class EntregaUnoTests(APITestCase):
+    def setUp(self):
+        # La API exige autenticación: estos casos actúan como personal (staff) con acceso completo.
+        staff = get_user_model().objects.create_user('staff', is_staff=True)
+        self.client.force_authenticate(staff)
+
     def test_coleccion_completa_y_persistencia(self):
         """Ejecuta las mismas 18 peticiones que se importan en Apidog."""
         path = Path(__file__).resolve().parent.parent / 'apidog/SmartConnect.postman_collection.json'

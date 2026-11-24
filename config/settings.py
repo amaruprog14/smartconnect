@@ -1,7 +1,9 @@
-"""Configuración para la práctica local de la entrega 1."""
+"""Configuración para la práctica local de SmartConnect."""
+from datetime import timedelta
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Clave solo para desarrollo local. También firma los JWT: no reutilizarla fuera de la práctica.
 SECRET_KEY = 'smartconnect-solo-desarrollo-local-entrega-1'
 DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
@@ -13,6 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'personas',
     'terrenos',
     'viviendas',
@@ -49,8 +52,18 @@ USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-# Esta entrega expone los CRUD locales sin login. JWT y permisos son posteriores.
+# Toda la API exige un token JWT válido, salvo las rutas de obtención y renovación.
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'],
-    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+# El access autentica cada petición; el refresh solo sirve para pedir un access nuevo.
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
