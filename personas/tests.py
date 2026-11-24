@@ -2,9 +2,15 @@ import json
 from pathlib import Path
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
+from django.test import override_settings
 from rest_framework.test import APITestCase
 from personas.models import Persona
 from terrenos.models import Terreno
+from viviendas.models import ParticipacionVivienda, Vivienda
+from accesos.models import PuntoAcceso
+
+# Hasher rápido solo para tests que crean cuentas con contraseña.
+HASHER_RAPIDO = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 
 class EntregaUnoTests(APITestCase):
@@ -44,13 +50,34 @@ class EntregaUnoTests(APITestCase):
         self.assertFalse(Terreno.objects.exists())
         self.assertFalse(Persona.objects.exists())
 
-    def test_datos_demo_no_se_duplican_y_administrador_repetido(self):
+    @override_settings(PASSWORD_HASHERS=HASHER_RAPIDO)
+    def test_datos_demo_no_se_duplican_y_cubren_los_escenarios(self):
         call_command('cargar_demo', verbosity=0)
         call_command('cargar_demo', verbosity=0)
-        self.assertEqual(Persona.objects.count(), 2)
+        self.assertEqual(Persona.objects.count(), 5)
         self.assertEqual(Terreno.objects.count(), 3)
+        self.assertEqual(Vivienda.objects.count(), 3)
+        self.assertEqual(ParticipacionVivienda.objects.count(), 5)
+        self.assertEqual(PuntoAcceso.objects.count(), 4)
+        # Cuentas con contraseña de demo, vinculadas a su persona (salvo staff).
+        for username in ('staff', 'ana', 'diego', 'sofia'):
+            self.assertTrue(get_user_model().objects.get(username=username).check_password('Demo1234!'))
+        self.assertTrue(get_user_model().objects.get(username='staff').is_staff)
+        self.assertEqual(Persona.objects.get(usuario__username='sofia').participaciones.count(), 0)
+        # Ana administra dos terrenos.
         ana = Persona.objects.get(codigo='PER-001')
         self.assertEqual(ana.terrenos_administrados.count(), 2)
+        # Carla tiene viviendas en dos terrenos: propietaria en uno y arrendataria en otro.
+        carla = Persona.objects.get(codigo='PER-003')
+        roles = {p.vivienda.terreno.codigo: p.rol for p in carla.participaciones.select_related('vivienda__terreno')}
+        self.assertEqual(roles, {'TER-001': 'ARRENDATARIO', 'TER-003': 'PROPIETARIO'})
+        # Casa 1: propietario administrador con un arrendatario y un conviviente.
+        casa1 = Vivienda.objects.get(terreno__codigo='TER-001', identificador='Casa 1')
+        self.assertEqual(sorted(casa1.participaciones.values_list('rol', flat=True)),
+                         ['ARRENDATARIO', 'CONVIVIENTE', 'PROPIETARIO_ADMIN'])
+        # Accesos comunes y uno ligado a una vivienda.
+        self.assertEqual(PuntoAcceso.objects.filter(vivienda__isnull=True).count(), 3)
+        self.assertEqual(PuntoAcceso.objects.get(vivienda=casa1).nombre, 'Puerta Casa 1')
 
     def test_reasignacion_permite_eliminar_administrador_anterior(self):
         ana = Persona.objects.create(codigo='A', nombres='Ana', apellidos='Rojas', email='a@example.com')
