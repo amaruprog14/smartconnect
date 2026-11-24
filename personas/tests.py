@@ -6,6 +6,7 @@ from django.core.management import call_command
 from django.test import override_settings
 from rest_framework.test import APITestCase
 from accesos.models import PuntoAcceso
+from config.pruebas import cliente, crear_escenario, ids
 from personas.models import Persona
 from terrenos.models import Terreno
 from viviendas.models import ParticipacionVivienda, Vivienda
@@ -128,6 +129,51 @@ class ColeccionApidogTests(APITestCase):
             self.assertEqual(datos, [])
 
 
+@override_settings(PASSWORD_HASHERS=HASHER_RAPIDO)
+class AutenticacionJWTTests(APITestCase):
+    def setUp(self):
+        get_user_model().objects.create_user('ana', password='Demo1234!')
+
+    def login(self):
+        return self.client.post('/api/token/', {'username': 'ana', 'password': 'Demo1234!'}, format='json')
+
+    def test_sin_token_responde_401_y_no_guarda(self):
+        for url in ('/api/personas/', '/api/terrenos/', '/api/viviendas/', '/api/puntos-acceso/'):
+            self.assertEqual(self.client.get(url).status_code, 401, url)
+        response = self.client.post('/api/personas/', {
+            'codigo': 'A', 'nombres': 'Ana', 'apellidos': 'Rojas', 'email': 'a@example.com',
+        }, format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertFalse(Persona.objects.exists())
+
+    def test_token_invalido_responde_401(self):
+        response = self.client.get('/api/personas/', HTTP_AUTHORIZATION='Bearer token-falso')
+        self.assertEqual(response.status_code, 401)
+
+    def test_login_entrega_access_y_refresh(self):
+        response = self.login()
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('access', response.data)
+        self.assertIn('refresh', response.data)
+        protegida = self.client.get('/api/personas/', HTTP_AUTHORIZATION=f'Bearer {response.data["access"]}')
+        self.assertEqual(protegida.status_code, 200)
+
+    def test_refresh_entrega_un_access_nuevo_que_funciona(self):
+        tokens = self.login().data
+        response = self.client.post('/api/token/refresh/', {'refresh': tokens['refresh']}, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.data['access'], tokens['access'])
+        protegida = self.client.get('/api/terrenos/', HTTP_AUTHORIZATION=f'Bearer {response.data["access"]}')
+        self.assertEqual(protegida.status_code, 200)
+
+    def test_login_y_refresh_invalidos_responden_401(self):
+        response = self.client.post('/api/token/', {'username': 'ana', 'password': 'otra'}, format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertNotIn('access', response.data)
+        response = self.client.post('/api/token/refresh/', {'refresh': 'no-es-un-token'}, format='json')
+        self.assertEqual(response.status_code, 401)
+
+
 class PersonasStaffTests(APITestCase):
     def setUp(self):
         # El staff tiene acceso completo al CRUD de personas y terrenos.
@@ -194,3 +240,53 @@ class PersonasStaffTests(APITestCase):
         # Accesos comunes y uno ligado a una vivienda.
         self.assertEqual(PuntoAcceso.objects.filter(vivienda__isnull=True).count(), 3)
         self.assertEqual(PuntoAcceso.objects.get(vivienda=casa1).nombre, 'Puerta Casa 1')
+
+
+class AlcancePersonasTests(APITestCase):
+    def setUp(self):
+        self.e = crear_escenario()
+
+    def test_usuario_normal_lista_y_edita_solo_su_persona(self):
+        ana = cliente(self.e.u_ana)
+        self.assertEqual(ids(ana.get('/api/personas/')), [self.e.ana.pk])
+        response = ana.patch(f'/api/personas/{self.e.ana.pk}/', {'nombres': 'Ana Maria'}, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.e.ana.refresh_from_db()
+        self.assertEqual(self.e.ana.nombres, 'Ana Maria')
+
+    def test_editar_o_ver_otra_persona_responde_403(self):
+        ana = cliente(self.e.u_ana)
+        self.assertEqual(ana.get(f'/api/personas/{self.e.diego.pk}/').status_code, 403)
+        response = ana.patch(f'/api/personas/{self.e.diego.pk}/', {'nombres': 'X'}, format='json')
+        self.assertEqual(response.status_code, 403)
+        self.e.diego.refresh_from_db()
+        self.assertEqual(self.e.diego.nombres, 'Diego')
+
+    def test_crear_y_eliminar_personas_solo_staff(self):
+        ana = cliente(self.e.u_ana)
+        antes = Persona.objects.count()
+        nueva = {'codigo': 'N', 'nombres': 'N', 'apellidos': 'N', 'email': 'n@example.com'}
+        self.assertEqual(ana.post('/api/personas/', nueva, format='json').status_code, 403)
+        self.assertEqual(ana.delete(f'/api/personas/{self.e.sofia.pk}/').status_code, 403)
+        self.assertEqual(Persona.objects.count(), antes)
+        staff = cliente(self.e.u_staff)
+        self.assertEqual(staff.post('/api/personas/', nueva, format='json').status_code, 201)
+        self.assertEqual(len(staff.get('/api/personas/').data), antes + 1)
+
+    def test_usuario_sin_persona_ve_listados_vacios_y_no_escribe(self):
+        sin_persona = cliente(self.e.u_sin_persona)
+        for url in ('/api/personas/', '/api/terrenos/', '/api/viviendas/', '/api/puntos-acceso/'):
+            response = sin_persona.get(url)
+            self.assertEqual((response.status_code, response.data), (200, []), url)
+        self.assertEqual(sin_persona.patch(f'/api/personas/{self.e.ana.pk}/', {'nombres': 'X'},
+                                           format='json').status_code, 403)
+        self.assertEqual(sin_persona.patch(f'/api/terrenos/{self.e.t1.pk}/', {'nombre': 'X'},
+                                           format='json').status_code, 403)
+        self.assertEqual(sin_persona.post('/api/viviendas/', {
+            'terreno': self.e.t1.pk, 'identificador': 'X', 'tipo': 'CASA',
+        }, format='json').status_code, 403)
+        self.assertEqual(sin_persona.post('/api/puntos-acceso/', {
+            'terreno': self.e.t1.pk, 'nombre': 'X', 'tipo': 'PUERTA',
+        }, format='json').status_code, 403)
+        self.assertEqual(Vivienda.objects.count(), 2)
+        self.assertEqual(PuntoAcceso.objects.count(), 3)
