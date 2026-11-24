@@ -1,13 +1,41 @@
 {
   "info": {
-    "name": "SmartConnect - Entrega 1 - Personas y Terrenos",
+    "name": "SmartConnect - Entrega 2 - JWT, maestros y participaciones",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Importar en Apidog como Postman v2.1. Ejecutar en orden. Si la importación no conserva variables o scripts, copiar los id de las respuestas como indica README.md."
+    "description": "Importar en Apidog como Postman v2.1. Requiere migrate y cargar_demo (clave de las cuentas: Demo1234!). Ejecutar las carpetas en orden: el login guarda access y refresh, y cada petición protegida envía Authorization: Bearer con el token de la cuenta indicada. Si la importación no conserva variables o scripts, copiar los valores de las respuestas como indica README.md."
   },
   "variable": [
     {
       "key": "base_url",
       "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "access",
+      "value": ""
+    },
+    {
+      "key": "refresh",
+      "value": ""
+    },
+    {
+      "key": "access_ana",
+      "value": ""
+    },
+    {
+      "key": "access_diego",
+      "value": ""
+    },
+    {
+      "key": "access_sofia",
+      "value": ""
+    },
+    {
+      "key": "ana_persona_id",
+      "value": ""
+    },
+    {
+      "key": "sofia_persona_id",
+      "value": ""
     },
     {
       "key": "persona_id",
@@ -16,575 +44,2296 @@
     {
       "key": "terreno_id",
       "value": ""
+    },
+    {
+      "key": "vivienda_demo_id",
+      "value": ""
+    },
+    {
+      "key": "vivienda_id",
+      "value": ""
+    },
+    {
+      "key": "punto_id",
+      "value": ""
+    },
+    {
+      "key": "punto_vivienda_id",
+      "value": ""
     }
   ],
   "item": [
     {
-      "name": "01 - Listar personas",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/",
-        "description": "Estado esperado: 200. Ejecutar las peticiones en orden."
-      },
-      "event": [
+      "name": "1. Autenticación JWT",
+      "description": "Login, renovación del token y rechazo sin autenticación.",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "02 - Crear persona y guardar persona_id",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/",
-        "description": "Estado esperado: 201. Ejecutar las peticiones en orden.",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"codigo\": \"PER-PRUEBA\",\n  \"nombres\": \"Camila\",\n  \"apellidos\": \"Perez\",\n  \"email\": \"camila.prueba@example.com\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "name": "01 - Login staff (guardar access)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/token/",
+            "description": "Estado esperado: 200. Obtiene el token de la cuenta de demo staff.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"staff\",\n  \"password\": \"Demo1234!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 201\", function () { pm.response.to.have.status(201); });",
-              "if (pm.response.code === 201) pm.collectionVariables.set(\"persona_id\", pm.response.json().id);"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "03 - Detalle persona",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/{{persona_id}}/",
-        "description": "Estado esperado: 200. Ejecutar las peticiones en orden."
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "04 - PUT persona completa",
-      "request": {
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/{{persona_id}}/",
-        "description": "Estado esperado: 200. Ejecutar las peticiones en orden.",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"codigo\": \"PER-PRUEBA\",\n  \"nombres\": \"Camila Andrea\",\n  \"apellidos\": \"Perez\",\n  \"email\": \"camila.prueba@example.com\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"access\", pm.response.json().access);",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"refresh\", pm.response.json().refresh);"
+                ]
+              }
             }
-          }
-        }
-      },
-      "event": [
+          ]
+        },
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "05 - PATCH solo nombres",
-      "request": {
-        "method": "PATCH",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
+          "name": "02 - Renovar access con refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/token/refresh/",
+            "description": "Estado esperado: 200. Entrega un access nuevo y lo guarda en access.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/{{persona_id}}/",
-        "description": "Estado esperado: 200. Ejecutar las peticiones en orden.",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"nombres\": \"Camila\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"access\", pm.response.json().access);"
+                ]
+              }
             }
-          }
-        }
-      },
-      "event": [
+          ]
+        },
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "06 - Rechazar codigo duplicado",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
+          "name": "03 - Sin token en ruta protegida",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/",
+            "description": "Estado esperado: 401. Sin el header Authorization la API responde 401."
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/",
-        "description": "Estado esperado: 400. Ejecutar las peticiones en orden.",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"codigo\": \"PER-PRUEBA\",\n  \"nombres\": \"Camila\",\n  \"apellidos\": \"Perez\",\n  \"email\": \"otra@example.com\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
             }
-          }
-        }
-      },
-      "event": [
+          ]
+        },
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 400\", function () { pm.response.to.have.status(400); });"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "07 - Rechazar email invalido",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
+          "name": "04 - Login con clave incorrecta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/token/",
+            "description": "Estado esperado: 401. Credenciales inválidas: no entrega token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"ana\",\n  \"password\": \"incorrecta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/",
-        "description": "Estado esperado: 400. Ejecutar las peticiones en orden.",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"codigo\": \"PER-INVALIDA\",\n  \"nombres\": \"Camila\",\n  \"apellidos\": \"Perez\",\n  \"email\": \"correo-invalido\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
             }
-          }
-        }
-      },
-      "event": [
+          ]
+        },
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 400\", function () { pm.response.to.have.status(400); });"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "08 - Listar terrenos",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/terrenos/",
-        "description": "Estado esperado: 200. Ejecutar las peticiones en orden."
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "09 - Crear terreno y guardar terreno_id",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
+          "name": "05 - Login ana (guardar access_ana)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/token/",
+            "description": "Estado esperado: 200. Obtiene el token de la cuenta de demo ana.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"ana\",\n  \"password\": \"Demo1234!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/terrenos/",
-        "description": "Estado esperado: 201. Ejecutar las peticiones en orden.",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"codigo\": \"TER-PRUEBA\",\n  \"nombre\": \"Conjunto de prueba\",\n  \"direccion\": \"Pasaje Ficticio 500\",\n  \"administrador\": {{persona_id}}\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"access_ana\", pm.response.json().access);"
+                ]
+              }
             }
-          }
-        }
-      },
-      "event": [
+          ]
+        },
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 201\", function () { pm.response.to.have.status(201); });",
-              "if (pm.response.code === 201) pm.collectionVariables.set(\"terreno_id\", pm.response.json().id);"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "10 - Detalle terreno relacionado",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
-        "description": "Estado esperado: 200. Ejecutar las peticiones en orden."
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "11 - PUT terreno completo",
-      "request": {
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
+          "name": "06 - Login diego (guardar access_diego)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/token/",
+            "description": "Estado esperado: 200. Obtiene el token de la cuenta de demo diego.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"diego\",\n  \"password\": \"Demo1234!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
-        "description": "Estado esperado: 200. Ejecutar las peticiones en orden.",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"codigo\": \"TER-PRUEBA\",\n  \"nombre\": \"Conjunto actualizado\",\n  \"direccion\": \"Pasaje Ficticio 500\",\n  \"administrador\": {{persona_id}}\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"access_diego\", pm.response.json().access);"
+                ]
+              }
             }
-          }
-        }
-      },
-      "event": [
+          ]
+        },
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "12 - PATCH solo direccion",
-      "request": {
-        "method": "PATCH",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
+          "name": "07 - Login sofia (guardar access_sofia)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/token/",
+            "description": "Estado esperado: 200. Obtiene el token de la cuenta de demo sofia.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"sofia\",\n  \"password\": \"Demo1234!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
-        "description": "Estado esperado: 200. Ejecutar las peticiones en orden.",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"direccion\": \"Pasaje Ficticio 501\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"access_sofia\", pm.response.json().access);"
+                ]
+              }
             }
-          }
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
-            ]
-          }
+          ]
         }
       ]
     },
     {
-      "name": "13 - Rechazar administrador inexistente",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
+      "name": "2. Personas",
+      "description": "CRUD de personas como staff y alcance de un usuario normal.",
+      "item": [
+        {
+          "name": "08 - Listar personas (staff)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/",
+            "description": "Estado esperado: 200. El staff ve todas las personas."
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/terrenos/",
-        "description": "Estado esperado: 400. Ejecutar las peticiones en orden.",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"codigo\": \"TER-INVALIDO\",\n  \"nombre\": \"Conjunto de prueba\",\n  \"direccion\": \"Pasaje Ficticio 500\",\n  \"administrador\": 999999999\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
             }
-          }
-        }
-      },
-      "event": [
+          ]
+        },
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 400\", function () { pm.response.to.have.status(400); });"
-            ]
-          }
+          "name": "09 - Ana ve solo su persona (guardar ana_persona_id)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/",
+            "description": "Estado esperado: 200. Un usuario normal solo ve su propia persona."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"ana_persona_id\", pm.response.json()[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10 - Sofia ve solo su persona (guardar sofia_persona_id)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_sofia}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/",
+            "description": "Estado esperado: 200. Guarda el id de Sofia para la operación del negocio."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"sofia_persona_id\", pm.response.json()[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11 - Crear persona y guardar persona_id",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/",
+            "description": "Estado esperado: 201. Solo el staff crea personas.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PER-PRUEBA\",\n  \"nombres\": \"Camila\",\n  \"apellidos\": \"Perez\",\n  \"email\": \"camila.prueba@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"persona_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12 - Detalle persona",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{persona_id}}/",
+            "description": "Estado esperado: 200. Consulta la persona creada."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13 - PUT persona completa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{persona_id}}/",
+            "description": "Estado esperado: 200. PUT exige todos los campos de entrada.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PER-PRUEBA\",\n  \"nombres\": \"Camila Andrea\",\n  \"apellidos\": \"Perez\",\n  \"email\": \"camila.prueba@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14 - PATCH solo nombres",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{persona_id}}/",
+            "description": "Estado esperado: 200. PATCH cambia solo los campos enviados.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Camila\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15 - Rechazar codigo duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/",
+            "description": "Estado esperado: 400. El código es único.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PER-PRUEBA\",\n  \"nombres\": \"Camila\",\n  \"apellidos\": \"Perez\",\n  \"email\": \"otra@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16 - Rechazar email invalido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/",
+            "description": "Estado esperado: 400. El email debe ser válido.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PER-INVALIDA\",\n  \"nombres\": \"Camila\",\n  \"apellidos\": \"Perez\",\n  \"email\": \"correo-invalido\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "name": "14 - Proteger administrador con terrenos",
-      "request": {
-        "method": "DELETE",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/{{persona_id}}/",
-        "description": "Estado esperado: 409. Ejecutar las peticiones en orden."
-      },
-      "event": [
+      "name": "3. Terrenos",
+      "description": "CRUD de terrenos como staff, protección y reasignación del administrador.",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 409\", function () { pm.response.to.have.status(409); });"
-            ]
-          }
+          "name": "17 - Listar terrenos (staff)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/",
+            "description": "Estado esperado: 200. El staff ve todos los terrenos."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "18 - Crear terreno y guardar terreno_id",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/",
+            "description": "Estado esperado: 201. Solo el staff crea terrenos. Administrador: la persona de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"TER-PRUEBA\",\n  \"nombre\": \"Conjunto de prueba\",\n  \"direccion\": \"Pasaje Ficticio 500\",\n  \"administrador\": {{persona_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"terreno_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "19 - Detalle terreno relacionado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 200. administrador_nombre muestra a la persona de prueba."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "20 - PUT terreno completo",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 200. PUT con todos los campos de entrada.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"TER-PRUEBA\",\n  \"nombre\": \"Conjunto actualizado\",\n  \"direccion\": \"Pasaje Ficticio 500\",\n  \"administrador\": {{persona_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "21 - PATCH solo direccion",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 200. PATCH cambia solo la dirección.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direccion\": \"Pasaje Ficticio 501\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "22 - Rechazar administrador inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/",
+            "description": "Estado esperado: 400. El administrador debe existir en Personas.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"TER-INVALIDO\",\n  \"nombre\": \"Conjunto de prueba\",\n  \"direccion\": \"Pasaje Ficticio 500\",\n  \"administrador\": 999999999\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "23 - Proteger administrador con terrenos",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{persona_id}}/",
+            "description": "Estado esperado: 409. PROTECT: no se elimina a quien administra terrenos."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "24 - Reasignar terreno a Ana",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 200. Ana pasa a administrar el terreno de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"administrador\": {{ana_persona_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "name": "15 - Eliminar terreno de prueba",
-      "request": {
-        "method": "DELETE",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
-        "description": "Estado esperado: 204. Ejecutar las peticiones en orden."
-      },
-      "event": [
+      "name": "4. Viviendas",
+      "description": "CRUD de viviendas como Ana, administradora del terreno de prueba.",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 204\", function () { pm.response.to.have.status(204); });"
-            ]
-          }
+          "name": "25 - Diego guarda su primera vivienda (vivienda_demo_id)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_diego}}"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/",
+            "description": "Estado esperado: 200. Diego ve las viviendas donde participa y las de su terreno. La primera es Casa 1 de TER-001."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"vivienda_demo_id\", pm.response.json()[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "26 - Crear vivienda y guardar vivienda_id",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/",
+            "description": "Estado esperado: 201. Ana administra el terreno: puede crear viviendas en él.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terreno\": {{terreno_id}},\n  \"identificador\": \"Casa A\",\n  \"tipo\": \"CASA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"vivienda_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "27 - Listar viviendas (Ana)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/",
+            "description": "Estado esperado: 200. Solo viviendas de los terrenos que administra o donde participa."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "28 - Detalle vivienda",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_id}}/",
+            "description": "Estado esperado: 200. Consulta la vivienda creada."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "29 - PUT vivienda completa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_id}}/",
+            "description": "Estado esperado: 200. PUT con todos los campos.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terreno\": {{terreno_id}},\n  \"identificador\": \"Casa A1\",\n  \"tipo\": \"CASA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "30 - PATCH solo tipo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_id}}/",
+            "description": "Estado esperado: 200. Cambia el tipo.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"DEPARTAMENTO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "31 - Rechazar identificador repetido en el terreno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/",
+            "description": "Estado esperado: 400. El identificador es único dentro de cada terreno.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terreno\": {{terreno_id}},\n  \"identificador\": \"Casa A1\",\n  \"tipo\": \"CASA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "32 - Sofia no puede crear viviendas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_sofia}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/",
+            "description": "Estado esperado: 403. Sofia no administra terrenos.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terreno\": {{terreno_id}},\n  \"identificador\": \"Casa B\",\n  \"tipo\": \"CASA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "name": "16 - Confirmar terreno eliminado",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
-        "description": "Estado esperado: 404. Ejecutar las peticiones en orden."
-      },
-      "event": [
+      "name": "5. Puntos de acceso",
+      "description": "CRUD de puntos de acceso como Ana.",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 404\", function () { pm.response.to.have.status(404); });"
-            ]
-          }
+          "name": "33 - Crear punto comun y guardar punto_id",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/",
+            "description": "Estado esperado: 201. Acceso común: sin vivienda.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terreno\": {{terreno_id}},\n  \"vivienda\": null,\n  \"nombre\": \"Porton de prueba\",\n  \"tipo\": \"PORTON\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"punto_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "34 - Crear punto de una vivienda y guardar punto_vivienda_id",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/",
+            "description": "Estado esperado: 201. Acceso privado de la vivienda de prueba.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terreno\": {{terreno_id}},\n  \"vivienda\": {{vivienda_id}},\n  \"nombre\": \"Puerta Casa A1\",\n  \"tipo\": \"PUERTA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"punto_vivienda_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "35 - Rechazar vivienda de otro terreno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/",
+            "description": "Estado esperado: 400. La vivienda debe pertenecer al mismo terreno del punto.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terreno\": {{terreno_id}},\n  \"vivienda\": {{vivienda_demo_id}},\n  \"nombre\": \"Puerta invalida\",\n  \"tipo\": \"PUERTA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "36 - Listar puntos de acceso (Ana)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/",
+            "description": "Estado esperado: 200. Solo los puntos de los terrenos que administra."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "37 - Detalle punto de acceso",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/{{punto_id}}/",
+            "description": "Estado esperado: 200. Consulta el punto común."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "38 - PUT punto completo",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/{{punto_id}}/",
+            "description": "Estado esperado: 200. PUT con todos los campos.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terreno\": {{terreno_id}},\n  \"vivienda\": null,\n  \"nombre\": \"Porton norte\",\n  \"tipo\": \"PORTON\",\n  \"activo\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "39 - PATCH desactivar punto",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/{{punto_id}}/",
+            "description": "Estado esperado: 200. Desactiva el punto.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"activo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "name": "17 - Eliminar persona de prueba",
-      "request": {
-        "method": "DELETE",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/{{persona_id}}/",
-        "description": "Estado esperado: 204. Ejecutar las peticiones en orden."
-      },
-      "event": [
+      "name": "6. Operación: asignar persona a vivienda",
+      "description": "POST /api/viviendas/{id}/participaciones/. Diego es PROPIETARIO_ADMIN de Casa 1 (TER-001).",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 204\", function () { pm.response.to.have.status(204); });"
-            ]
-          }
+          "name": "40 - Diego lista participaciones de Casa 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_diego}}"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_demo_id}}/participaciones/",
+            "description": "Estado esperado: 200. Diego participa en Casa 1."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "41 - Diego asigna arrendataria (valida)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_diego}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_demo_id}}/participaciones/",
+            "description": "Estado esperado: 201. Un PROPIETARIO_ADMIN activo de la vivienda asigna ARRENDATARIO.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": {{persona_id}},\n  \"rol\": \"ARRENDATARIO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 201\", function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "42 - Rechazar asignacion duplicada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_diego}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_demo_id}}/participaciones/",
+            "description": "Estado esperado: 400. La persona ya participa en esa vivienda. La BD no cambia.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": {{persona_id}},\n  \"rol\": \"CONVIVIENTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "43 - Rechazar administrador del terreno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_demo_id}}/participaciones/",
+            "description": "Estado esperado: 403. Ana administra TER-001, pero no es PROPIETARIO_ADMIN de Casa 1. La BD no cambia.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": {{sofia_persona_id}},\n  \"rol\": \"CONVIVIENTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "44 - Rechazar PROPIETARIO_ADMIN sin ser staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_diego}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_demo_id}}/participaciones/",
+            "description": "Estado esperado: 403. Solo el staff asigna PROPIETARIO_ADMIN. La BD no cambia.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": {{sofia_persona_id}},\n  \"rol\": \"PROPIETARIO_ADMIN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "45 - Rechazar persona sin participacion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_sofia}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_demo_id}}/participaciones/",
+            "description": "Estado esperado: 403. Sofia no tiene autoridad en Casa 1. La BD no cambia.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": {{sofia_persona_id}},\n  \"rol\": \"CONVIVIENTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "46 - Verificar participaciones guardadas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_diego}}"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_demo_id}}/participaciones/",
+            "description": "Estado esperado: 200. Aparece la arrendataria nueva y ninguna de las asignaciones rechazadas."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "name": "18 - Confirmar persona eliminada",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/personas/{{persona_id}}/",
-        "description": "Estado esperado: 404. Ejecutar las peticiones en orden."
-      },
-      "event": [
+      "name": "7. Permisos fuera del alcance",
+      "description": "Token válido, pero acción fuera del alcance: 403.",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Estado HTTP 404\", function () { pm.response.to.have.status(404); });"
-            ]
-          }
+          "name": "47 - Diego no edita un terreno ajeno",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_diego}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 403. Solo el administrador del terreno lo edita.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cambio no permitido\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "48 - Diego no edita una vivienda ajena",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_diego}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_id}}/",
+            "description": "Estado esperado: 403. La vivienda es de un terreno que Diego no administra.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"CASA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "49 - Ana no edita otra persona",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{persona_id}}/",
+            "description": "Estado esperado: 403. Un usuario normal solo edita su propia persona.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Cambio no permitido\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "50 - Ana no elimina terrenos",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 403. Crear o eliminar terrenos es solo del staff."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "51 - Sofia ve una lista vacia de terrenos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_sofia}}"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/",
+            "description": "Estado esperado: 200. Sin terrenos ni viviendas, el listado viene vacío."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "8. Limpieza",
+      "description": "Elimina los datos de prueba. Los datos de cargar_demo se conservan.",
+      "item": [
+        {
+          "name": "52 - Proteger vivienda con puntos",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_id}}/",
+            "description": "Estado esperado: 409. PROTECT: la vivienda aún tiene un punto de acceso."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "53 - Proteger terreno con viviendas",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 409. PROTECT: el terreno aún tiene viviendas y puntos."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "54 - Eliminar punto de la vivienda",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/{{punto_vivienda_id}}/",
+            "description": "Estado esperado: 204. Sin cuerpo."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "55 - Eliminar punto comun",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/{{punto_id}}/",
+            "description": "Estado esperado: 204. Sin cuerpo."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "56 - Confirmar punto eliminado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/puntos-acceso/{{punto_id}}/",
+            "description": "Estado esperado: 404. Ya no existe."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "57 - Eliminar vivienda de prueba",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_id}}/",
+            "description": "Estado esperado: 204. Sin cuerpo."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "58 - Confirmar vivienda eliminada",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_id}}/",
+            "description": "Estado esperado: 404. Ya no existe."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "59 - Eliminar terreno de prueba",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 204. Sin cuerpo."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "60 - Confirmar terreno eliminado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 404. Ya no existe."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "61 - Eliminar persona de prueba",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{persona_id}}/",
+            "description": "Estado esperado: 204. También elimina su participación en Casa 1."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "62 - Confirmar persona eliminada",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{persona_id}}/",
+            "description": "Estado esperado: 404. Ya no existe."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     }
