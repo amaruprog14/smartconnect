@@ -1,0 +1,183 @@
+SMARTCONNECT: SUBIR A GITHUB Y CONTINUAR EN OTRO PC
+
+Ejecuta los comandos de uno en uno en PowerShell. Sustituye TU_USUARIO,
+Tu Nombre y tu-correo@example.com por tus datos reales. Los comandos de
+Git se ejecutan desde la carpeta que contiene manage.py.
+
+1. PREPARAR EL PRIMER PC
+
+Instala Git para Windows desde https://git-scm.com/downloads/win
+Instala Python 3.12 o 3.13 si aún no lo tienes.
+Cierra y vuelve a abrir el editor después de instalar Git.
+
+Comprueba:
+
+git --version
+py --version
+
+Extrae SmartConnect_Entrega1.zip, abre la carpeta smartconnect en VS Code
+y abre Terminal > Nueva terminal. Comprueba que manage.py esté ahí:
+
+Get-ChildItem
+
+Si descargaste SmartConnect_ER_v1.drawio por separado, guárdalo dentro de
+docs para versionarlo junto al código. El ZIP actualizado ya lo incluye.
+
+2. CREAR EL REPOSITORIO VACÍO EN GITHUB
+
+En https://github.com inicia sesión y elige New repository.
+Nombre sugerido: smartconnect.
+Elige la visibilidad que corresponda a la clase.
+Deja desmarcadas las opciones para añadir README, .gitignore y licencia:
+esos archivos se subirán desde tu carpeta local.
+Pulsa Create repository y copia la URL HTTPS.
+Ejemplo: https://github.com/TU_USUARIO/smartconnect.git
+
+3. SUBIR POR PRIMERA VEZ
+
+Desde la carpeta de manage.py, que viene sin repositorio Git:
+
+git init -b main
+git config user.name "Tu Nombre"
+git config user.email "tu-correo@example.com"
+git add .
+git status
+
+Revisa la lista antes de continuar. Deben estar el código, requirements.txt,
+las migraciones y docs. .venv, db.sqlite3 y __pycache__ están excluidos
+mediante .gitignore. Las migraciones sí deben subirse.
+
+git commit -m "Agrega base inicial de SmartConnect y diagrama ER"
+git remote add origin https://github.com/TU_USUARIO/smartconnect.git
+git push -u origin main
+
+Si aparece el inicio de sesión del gestor de credenciales de Git, entra
+con tu cuenta de GitHub desde el navegador. La contraseña normal de tu
+cuenta no sirve como contraseña de Git por HTTPS; si tu instalación pide
+usuario y contraseña en terminal, configura Git Credential Manager o usa
+la autenticación admitida por GitHub. No pegues tokens en los comandos.
+
+Actualiza la página del repositorio: deben verse tus archivos.
+Esta subida guarda la base inicial; las contribuciones posteriores de cada
+integrante deben quedar en sus propios commits y PR.
+
+4. CONTINUAR EN EL SEGUNDO PC
+
+Instala Git, Python 3.12 o 3.13 y tu editor.
+Abre PowerShell en la carpeta donde quieres guardar el proyecto y ejecuta:
+
+git clone https://github.com/TU_USUARIO/smartconnect.git
+cd smartconnect
+git config user.name "Tu Nombre"
+git config user.email "tu-correo@example.com"
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py cargar_demo
+.\.venv\Scripts\python.exe manage.py runserver
+
+Para un repositorio privado, autentícate con una cuenta que tenga acceso.
+Abre http://127.0.0.1:8000/api/personas/
+La terminal de runserver debe permanecer abierta. Detén con Ctrl+C.
+
+Clona una sola vez en cada PC. Después usa git pull para actualizar esa
+copia. El entorno .venv se crea nuevamente en cada computador.
+
+Git sincroniza código y migraciones. La BD SQLite local no se sube.
+cargar_demo reconstruye los datos ficticios iniciales; los registros que
+hayas agregado manualmente no se copian al otro PC con git pull.
+
+5. RUTINA SI SOLO TÚ CAMBIAS ENTRE TUS DOS PC
+
+Antes de trabajar, desde main y sin cambios locales pendientes:
+
+git switch main
+git pull --ff-only origin main
+
+Después de editar:
+
+git status
+git add .
+git commit -m "Describe aquí el cambio realizado"
+git push origin main
+
+Antes de cambiar de computador, termina commit y push. En el otro equipo,
+haz pull antes de editar. Si Git indica cambios locales pendientes, primero
+revisa y guarda esos cambios en su rama; no fuerces la actualización.
+
+6. RUTINA PARA LOS DOS INTEGRANTES: RAMAS Y PULL REQUEST
+
+El dueño invita al compañero desde Settings > Collaborators > Add people
+en GitHub. El compañero acepta la invitación. Cada uno usa su cuenta y su
+nombre/correo de Git, aunque el repositorio sea compartido.
+
+Antes de iniciar una tarea nueva, desde una copia sin cambios pendientes:
+
+git switch main
+git pull --ff-only origin main
+git switch -c feature/mejora-personas
+
+Edita y comprueba tus cambios. Luego:
+
+git add .
+git commit -m "Mejora validaciones del modulo personas"
+git push -u origin feature/mejora-personas
+
+En GitHub abre un Pull Request desde feature/mejora-personas hacia main.
+Tu compañero revisa y, cuando corresponda, se integra con Merge.
+El otro integrante sigue el mismo flujo con una rama distinta, por ejemplo
+feature/mejora-terrenos. Estos nombres son ejemplos para tareas nuevas;
+el código base ya contiene ambos CRUD.
+
+Después de integrar un PR, ambos actualizan main:
+
+git switch main
+git pull --ff-only origin main
+
+Para seguir una rama aún no integrada desde el otro PC, después de haberla
+subido en el primero:
+
+git fetch origin
+git switch --track origin/feature/mejora-personas
+
+Ese último comando es para la primera vez que abres esa rama en ese PC.
+Si ya existe localmente, usa git switch feature/mejora-personas y después
+git pull --ff-only.
+
+7. CAMBIOS EN MODELOS Y MIGRACIONES
+
+Cuando cambies models.py en el equipo donde desarrollas:
+
+.\.venv\Scripts\python.exe manage.py makemigrations
+.\.venv\Scripts\python.exe manage.py migrate
+
+Incluye los archivos de migración en el commit. En el otro PC, después de
+pull, actualiza dependencias y aplica esas migraciones:
+
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe manage.py migrate
+
+8. DIAGRAMA DRAW.IO
+
+Abre https://app.diagrams.net y elige guardar en Dispositivo.
+Usa Archivo > Abrir desde > Dispositivo y selecciona SmartConnect_ER_v1.drawio.
+Pestaña ER v1 completo: sistema previsto.
+Pestaña BD inicial implementada: las dos tablas actuales.
+Guarda los cambios en docs/SmartConnect_ER_v1.drawio y súbelos con commit
+y push igual que el código. Actualiza también la documentación si cambias
+relaciones, campos o supuestos.
+
+9. EVIDENCIA PARA LA ENTREGA
+
+Guarda la URL del repositorio, las URL de los PR revisados y el hash final:
+
+git rev-parse HEAD
+
+Guarda también las peticiones y capturas reales de Apidog.
+
+REFERENCIAS OFICIALES
+
+https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github?platform=windows
+https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository
+https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github
+https://www.drawio.com/docs/manual/open-diagram-file/

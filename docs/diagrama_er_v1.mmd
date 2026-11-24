@@ -1,0 +1,83 @@
+erDiagram
+    PERSONA ||--o{ TERRENO : administra
+    TERRENO ||--o{ VIVIENDA : contiene
+    PERSONA ||--o{ PARTICIPACION_VIVIENDA : participa
+    VIVIENDA ||--o{ PARTICIPACION_VIVIENDA : tiene
+    PERSONA ||--o{ TRABAJADOR_TERRENO : trabaja
+    TERRENO ||--o{ TRABAJADOR_TERRENO : emplea
+    PERSONA ||--o{ CREDENCIAL : posee
+    TERRENO ||--o{ PUNTO_ACCESO : contiene
+    VIVIENDA o|--o{ PUNTO_ACCESO : vincula_opcionalmente
+    PERSONA ||--o{ AUTORIZACION_ACCESO : recibe
+    PUNTO_ACCESO ||--o{ AUTORIZACION_ACCESO : habilita
+    PUNTO_ACCESO ||--o{ INTENTO_ACCESO : registra
+    PERSONA o|--o{ INTENTO_ACCESO : identificada
+    CREDENCIAL o|--o{ INTENTO_ACCESO : utilizada
+
+    PERSONA {
+        bigint id PK
+        string codigo UK
+        string nombres
+        string apellidos
+        string email UK
+    }
+    TERRENO {
+        bigint id PK
+        string codigo UK
+        string nombre
+        string direccion
+        bigint administrador_id FK
+    }
+    VIVIENDA {
+        bigint id PK
+        bigint terreno_id FK
+        string identificador
+        string tipo
+    }
+    PARTICIPACION_VIVIENDA {
+        bigint id PK
+        bigint persona_id FK
+        bigint vivienda_id FK
+        string rol
+        boolean activa
+    }
+    TRABAJADOR_TERRENO {
+        bigint id PK
+        bigint persona_id FK
+        bigint terreno_id FK
+        string funcion
+        boolean activo
+    }
+    CREDENCIAL {
+        bigint id PK
+        string uid UK
+        bigint persona_id FK
+        string estado
+    }
+    PUNTO_ACCESO {
+        bigint id PK
+        bigint terreno_id FK
+        bigint vivienda_id FK "nullable"
+        string nombre
+        string tipo
+        boolean activo
+    }
+    AUTORIZACION_ACCESO {
+        bigint id PK
+        bigint persona_id FK
+        bigint punto_acceso_id FK
+        boolean activa
+    }
+    INTENTO_ACCESO {
+        bigint id PK
+        bigint punto_acceso_id FK
+        bigint persona_id FK "nullable"
+        bigint credencial_id FK "nullable"
+        string medio
+        string uid_recibido "nullable para APP"
+        datetime fecha_hora
+        string resultado
+        string motivo
+        string estado_dispositivo
+        string contexto_proximidad
+    }
