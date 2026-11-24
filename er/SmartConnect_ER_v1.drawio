@@ -1,387 +1,149 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mxfile host="app.diagrams.net" type="device" version="24.7.17">
   <diagram name="ER v1 completo" id="ER-v1-completo">
-    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="3600" pageHeight="2200" math="0" shadow="0">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="2000" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title" value="&lt;b&gt;SmartConnect - Diagrama ER v1 previsto&lt;/b&gt;" vertex="1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;">
-          <mxGeometry x="50" y="10" width="2600" height="45" as="geometry" />
+        <mxCell id="PERSONA" value="PERSONA" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="270" width="172" height="231" as="geometry" />
         </mxCell>
-        <mxCell id="legend" value="Azul: Persona y Terreno implementados. Gris: entidades propuestas para siguientes entregas.&lt;br&gt;PK: clave primaria · FK: clave foránea · UK: único · 0..1: opcional · 0..N: cero o varios." vertex="1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;">
-          <mxGeometry x="50" y="55" width="2600" height="60" as="geometry" />
+        <mxCell id="PERSONA_campos" value="id: int PK&lt;br&gt;codigo: string UK&lt;br&gt;nombres: string&lt;br&gt;apellidos: string&lt;br&gt;email: string UK" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="PERSONA">
+          <mxGeometry y="38" width="172" height="193" as="geometry" />
         </mxCell>
-        <mxCell id="PERSONA" value="PERSONA" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#dae8fc;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="40.0" y="434.08" width="142.46" height="224.16" as="geometry" />
+        <mxCell id="TERRENO" value="TERRENO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="360" y="440" width="232" height="231" as="geometry" />
         </mxCell>
-        <mxCell id="PERSONA_fields" value="bigint id PK&lt;br&gt;string codigo UK&lt;br&gt;string nombres&lt;br&gt;string apellidos&lt;br&gt;string email UK" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="PERSONA">
-          <mxGeometry x="0" y="38" width="142.46" height="186.16" as="geometry" />
+        <mxCell id="TERRENO_campos" value="id: int PK&lt;br&gt;codigo: string UK&lt;br&gt;nombre: string&lt;br&gt;direccion: string&lt;br&gt;administrador_id: int FK" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="TERRENO">
+          <mxGeometry y="38" width="232" height="193" as="geometry" />
         </mxCell>
-        <mxCell id="TERRENO" value="TERRENO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#dae8fc;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="333.81" y="596.08" width="214.36" height="224.16" as="geometry" />
+        <mxCell id="TRABAJADOR_TERRENO" value="TRABAJADOR_TERRENO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="830" y="210" width="237" height="231" as="geometry" />
         </mxCell>
-        <mxCell id="TERRENO_fields" value="bigint id PK&lt;br&gt;string codigo UK&lt;br&gt;string nombre&lt;br&gt;string direccion&lt;br&gt;bigint administrador_id FK" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="TERRENO">
-          <mxGeometry x="0" y="38" width="214.36" height="186.16" as="geometry" />
+        <mxCell id="TRABAJADOR_TERRENO_campos" value="id: int PK&lt;br&gt;persona_id: int FK&lt;br&gt;terreno_id: int FK&lt;br&gt;funcion: string&lt;br&gt;activo: boolean" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="TRABAJADOR_TERRENO">
+          <mxGeometry y="38" width="237" height="193" as="geometry" />
         </mxCell>
-        <mxCell id="VIVIENDA" value="VIVIENDA" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f5f5f5;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="848.71" y="649.36" width="165.81" height="187.2" as="geometry" />
+        <mxCell id="VIVIENDA" value="VIVIENDA" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="860" y="490" width="207" height="194" as="geometry" />
         </mxCell>
-        <mxCell id="VIVIENDA_fields" value="bigint id PK&lt;br&gt;bigint terreno_id FK&lt;br&gt;string identificador&lt;br&gt;string tipo" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="VIVIENDA">
-          <mxGeometry x="0" y="38" width="165.81" height="149.2" as="geometry" />
+        <mxCell id="VIVIENDA_campos" value="id: int PK&lt;br&gt;terreno_id: int FK&lt;br&gt;identificador: string&lt;br&gt;tipo: string" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="VIVIENDA">
+          <mxGeometry y="38" width="207" height="156" as="geometry" />
         </mxCell>
-        <mxCell id="PARTICIPACION_VIVIENDA" value="PARTICIPACION_VIVIENDA" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f5f5f5;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1260.54" y="332.08" width="240.43" height="224.16" as="geometry" />
+        <mxCell id="CREDENCIAL" value="CREDENCIAL" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="610" y="860" width="181" height="194" as="geometry" />
         </mxCell>
-        <mxCell id="PARTICIPACION_VIVIENDA_fields" value="bigint id PK&lt;br&gt;bigint persona_id FK&lt;br&gt;bigint vivienda_id FK&lt;br&gt;string rol&lt;br&gt;boolean activa" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="PARTICIPACION_VIVIENDA">
-          <mxGeometry x="0" y="38" width="240.43" height="186.16" as="geometry" />
+        <mxCell id="CREDENCIAL_campos" value="id: int PK&lt;br&gt;uid: string UK&lt;br&gt;persona_id: int FK&lt;br&gt;estado: string" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="CREDENCIAL">
+          <mxGeometry y="38" width="181" height="156" as="geometry" />
         </mxCell>
-        <mxCell id="TRABAJADOR_TERRENO" value="TRABAJADOR_TERRENO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f5f5f5;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="817.47" y="387.28" width="228.28" height="224.16" as="geometry" />
+        <mxCell id="PARTICIPACION_VIVIENDA" value="PARTICIPACION_VIVIENDA" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="160" width="250" height="231" as="geometry" />
         </mxCell>
-        <mxCell id="TRABAJADOR_TERRENO_fields" value="bigint id PK&lt;br&gt;bigint persona_id FK&lt;br&gt;bigint terreno_id FK&lt;br&gt;string funcion&lt;br&gt;boolean activo" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="TRABAJADOR_TERRENO">
-          <mxGeometry x="0" y="38" width="228.28" height="186.16" as="geometry" />
+        <mxCell id="PARTICIPACION_VIVIENDA_campos" value="id: int PK&lt;br&gt;persona_id: int FK&lt;br&gt;vivienda_id: int FK&lt;br&gt;rol: string&lt;br&gt;activa: boolean" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="PARTICIPACION_VIVIENDA">
+          <mxGeometry y="38" width="250" height="193" as="geometry" />
         </mxCell>
-        <mxCell id="CREDENCIAL" value="CREDENCIAL" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f5f5f5;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="596.18" y="1006.96" width="173.29" height="187.2" as="geometry" />
+        <mxCell id="PUNTO_ACCESO" value="PUNTO_ACCESO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="490" width="232" height="268" as="geometry" />
         </mxCell>
-        <mxCell id="CREDENCIAL_fields" value="bigint id PK&lt;br&gt;string uid UK&lt;br&gt;bigint persona_id FK&lt;br&gt;string estado" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="CREDENCIAL">
-          <mxGeometry x="0" y="38" width="173.29" height="149.2" as="geometry" />
+        <mxCell id="PUNTO_ACCESO_campos" value="id: int PK&lt;br&gt;terreno_id: int FK&lt;br&gt;vivienda_id: int FK null&lt;br&gt;nombre: string&lt;br&gt;tipo: string&lt;br&gt;activo: boolean" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="PUNTO_ACCESO">
+          <mxGeometry y="38" width="232" height="230" as="geometry" />
         </mxCell>
-        <mxCell id="PUNTO_ACCESO" value="PUNTO_ACCESO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f5f5f5;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1262.36" y="648.4" width="236.81" height="261.12" as="geometry" />
+        <mxCell id="AUTORIZACION_ACCESO" value="AUTORIZACION_ACCESO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="180" width="240" height="194" as="geometry" />
         </mxCell>
-        <mxCell id="PUNTO_ACCESO_fields" value="bigint id PK&lt;br&gt;bigint terreno_id FK&lt;br&gt;bigint vivienda_id FK nullable&lt;br&gt;string nombre&lt;br&gt;string tipo&lt;br&gt;boolean activo" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="PUNTO_ACCESO">
-          <mxGeometry x="0" y="38" width="236.81" height="223.12" as="geometry" />
+        <mxCell id="AUTORIZACION_ACCESO_campos" value="id: int PK&lt;br&gt;persona_id: int FK&lt;br&gt;punto_acceso_id: int FK&lt;br&gt;activa: boolean" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="AUTORIZACION_ACCESO">
+          <mxGeometry y="38" width="240" height="156" as="geometry" />
         </mxCell>
-        <mxCell id="AUTORIZACION_ACCESO" value="AUTORIZACION_ACCESO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f5f5f5;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1669.71" y="247.36" width="229.21" height="187.2" as="geometry" />
+        <mxCell id="INTENTO_ACCESO" value="INTENTO_ACCESO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f1f5f9;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1690" y="600" width="318" height="453" as="geometry" />
         </mxCell>
-        <mxCell id="AUTORIZACION_ACCESO_fields" value="bigint id PK&lt;br&gt;bigint persona_id FK&lt;br&gt;bigint punto_acceso_id FK&lt;br&gt;boolean activa" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="AUTORIZACION_ACCESO">
-          <mxGeometry x="0" y="38" width="229.21" height="149.2" as="geometry" />
+        <mxCell id="INTENTO_ACCESO_campos" value="id: int PK&lt;br&gt;punto_acceso_id: int FK&lt;br&gt;persona_id: int FK null&lt;br&gt;credencial_id: int FK null&lt;br&gt;medio: string&lt;br&gt;uid_recibido: string null para APP&lt;br&gt;fecha_hora: datetime&lt;br&gt;resultado: string&lt;br&gt;motivo: string&lt;br&gt;estado_dispositivo: string&lt;br&gt;contexto_proximidad: string" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="INTENTO_ACCESO">
+          <mxGeometry y="38" width="318" height="415" as="geometry" />
         </mxCell>
-        <mxCell id="INTENTO_ACCESO" value="INTENTO_ACCESO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#f5f5f5;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1636.97" y="757.6" width="294.7" height="445.92" as="geometry" />
+        <mxCell id="rel0" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;" edge="1" parent="1" source="PERSONA" target="TERRENO">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="INTENTO_ACCESO_fields" value="bigint id PK&lt;br&gt;bigint punto_acceso_id FK&lt;br&gt;bigint persona_id FK nullable&lt;br&gt;bigint credencial_id FK nullable&lt;br&gt;string medio&lt;br&gt;string uid_recibido nullable para APP&lt;br&gt;datetime fecha_hora&lt;br&gt;string resultado&lt;br&gt;string motivo&lt;br&gt;string estado_dispositivo&lt;br&gt;string contexto_proximidad" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="INTENTO_ACCESO">
-          <mxGeometry x="0" y="38" width="294.7" height="407.92" as="geometry" />
+        <mxCell id="rel1" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;" edge="1" parent="1" source="TERRENO" target="VIVIENDA">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="rel0" value="administra" edge="1" parent="1" source="PERSONA" target="TERRENO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
+        <mxCell id="rel2" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" edge="1" parent="1" source="PERSONA" target="PARTICIPACION_VIVIENDA">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="226.38" y="602.55" />
-              <mxPoint x="284.26" y="631.19" />
+              <mxPoint x="720" y="205" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel0_start" value="1" vertex="1" connectable="0" parent="rel0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
+        <mxCell id="rel3" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=1;exitY=0.15;entryX=0;entryY=0.9;" edge="1" parent="1" source="VIVIENDA" target="PARTICIPACION_VIVIENDA">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="rel0_end" value="0..N" vertex="1" connectable="0" parent="rel0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
+        <mxCell id="rel4" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=1;exitY=0.45;entryX=0;entryY=0.55;" edge="1" parent="1" source="PERSONA" target="TRABAJADOR_TERRENO">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="rel1" value="contiene" edge="1" parent="1" source="TERRENO" target="VIVIENDA" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
+        <mxCell id="rel5" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=1;exitY=0.2;entryX=0;entryY=0.8;" edge="1" parent="1" source="TERRENO" target="TRABAJADOR_TERRENO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel6" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=0.6;exitY=1;entryX=0;entryY=0.6;" edge="1" parent="1" source="PERSONA" target="CREDENCIAL">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="638.43" y="722.15" />
-              <mxPoint x="766.35" y="731.26" />
+              <mxPoint x="240" y="870" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel1_start" value="1" vertex="1" connectable="0" parent="rel1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel1_end" value="0..N" vertex="1" connectable="0" parent="rel1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel2" value="participa" edge="1" parent="1" source="PERSONA" target="PARTICIPACION_VIVIENDA" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
+        <mxCell id="rel7" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=1;exitY=0.8;entryX=0;entryY=0.65;" edge="1" parent="1" source="TERRENO" target="PUNTO_ACCESO">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="336.52" y="459.63" />
-              <mxPoint x="719.55" y="332.08" />
-              <mxPoint x="1045.76" y="368.56" />
-              <mxPoint x="1117.94" y="376.64" />
-              <mxPoint x="1197.28" y="394.24" />
+              <mxPoint x="950" y="730" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel2_start" value="1" vertex="1" connectable="0" parent="rel2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
+        <mxCell id="rel8" value="" style="curved=1;rounded=1;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=1;exitY=0.55;entryX=0;entryY=0.5;" edge="1" parent="1" source="VIVIENDA" target="PUNTO_ACCESO">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="rel2_end" value="0..N" vertex="1" connectable="0" parent="rel2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel3" value="tiene" edge="1" parent="1" source="VIVIENDA" target="PARTICIPACION_VIVIENDA" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
+        <mxCell id="rel9" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=0.85;exitY=0;entryX=0;entryY=0;" edge="1" parent="1" source="PERSONA" target="AUTORIZACION_ACCESO">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1083.17" y="642.38" />
-              <mxPoint x="1182.94" y="575.64" />
+              <mxPoint x="450" y="60" />
+              <mxPoint x="1600" y="60" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel3_start" value="1" vertex="1" connectable="0" parent="rel3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
+        <mxCell id="rel10" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=1;exitY=0.15;entryX=0;entryY=0.95;" edge="1" parent="1" source="PUNTO_ACCESO" target="AUTORIZACION_ACCESO">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="rel3_end" value="0..N" vertex="1" connectable="0" parent="rel3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
+        <mxCell id="rel11" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=1;exitY=0.7;entryX=0;entryY=0.33;" edge="1" parent="1" source="PUNTO_ACCESO" target="INTENTO_ACCESO">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="rel4" value="trabaja" edge="1" parent="1" source="PERSONA" target="TRABAJADOR_TERRENO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
+        <mxCell id="rel12" value="" style="curved=1;rounded=1;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=0.75;exitY=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="PERSONA" target="INTENTO_ACCESO">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="323.76" y="534.06" />
-              <mxPoint x="646.05" y="515.63" />
+              <mxPoint x="450" y="830" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel4_start" value="1" vertex="1" connectable="0" parent="rel4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel4_end" value="0..N" vertex="1" connectable="0" parent="rel4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel5" value="emplea" edge="1" parent="1" source="TERRENO" target="TRABAJADOR_TERRENO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="627.77" y="628.79" />
-              <mxPoint x="736.68" y="582.21" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel5_start" value="1" vertex="1" connectable="0" parent="rel5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel5_end" value="0..N" vertex="1" connectable="0" parent="rel5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel6" value="posee" edge="1" parent="1" source="PERSONA" target="CREDENCIAL" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="143.07" y="783.44" />
-              <mxPoint x="177.48" y="975.84" />
-              <mxPoint x="230.46" y="1024.96" />
-              <mxPoint x="329.48" y="1116.75" />
-              <mxPoint x="495.94" y="1119.96" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel6_start" value="1" vertex="1" connectable="0" parent="rel6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel6_end" value="0..N" vertex="1" connectable="0" parent="rel6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel7" value="contiene" edge="1" parent="1" source="TERRENO" target="PUNTO_ACCESO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="621.11" y="805.31" />
-              <mxPoint x="722.09" y="850.46" />
-              <mxPoint x="817.47" y="870.16" />
-              <mxPoint x="970.42" y="901.77" />
-              <mxPoint x="1148.67" y="859.61" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel7_start" value="1" vertex="1" connectable="0" parent="rel7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel7_end" value="0..N" vertex="1" connectable="0" parent="rel7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel8" value="vincula opcionalmente" edge="1" parent="1" source="VIVIENDA" target="PUNTO_ACCESO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1083.68" y="755.12" />
-              <mxPoint x="1184.39" y="763.24" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel8_start" value="0..1" vertex="1" connectable="0" parent="rel8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel8_end" value="0..N" vertex="1" connectable="0" parent="rel8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel9" value="recibe" edge="1" parent="1" source="PERSONA" target="AUTORIZACION_ACCESO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="225.84" y="344.06" />
-              <mxPoint x="319.23" y="231.76" />
-              <mxPoint x="439.79" y="231.76" />
-              <mxPoint x="439.79" y="231.76" />
-              <mxPoint x="439.79" y="231.76" />
-              <mxPoint x="1381.91" y="231.76" />
-              <mxPoint x="1481.7" y="231.76" />
-              <mxPoint x="1590.71" y="263.61" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel9_start" value="1" vertex="1" connectable="0" parent="rel9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel9_end" value="0..N" vertex="1" connectable="0" parent="rel9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel10" value="habilita" edge="1" parent="1" source="PUNTO_ACCESO" target="AUTORIZACION_ACCESO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1562.51" y="581.79" />
-              <mxPoint x="1639.58" y="497.64" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel10_start" value="1" vertex="1" connectable="0" parent="rel10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel10_end" value="0..N" vertex="1" connectable="0" parent="rel10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel11" value="registra" edge="1" parent="1" source="PUNTO_ACCESO" target="INTENTO_ACCESO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1542.16" y="859.49" />
-              <mxPoint x="1591.55" y="884.31" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel11_start" value="1" vertex="1" connectable="0" parent="rel11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel11_end" value="0..N" vertex="1" connectable="0" parent="rel11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel12" value="identificada" edge="1" parent="1" source="PERSONA" target="INTENTO_ACCESO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="186.5" y="786.74" />
-              <mxPoint x="278.31" y="980.56" />
-              <mxPoint x="439.79" y="980.56" />
-              <mxPoint x="439.79" y="980.56" />
-              <mxPoint x="439.79" y="980.56" />
-              <mxPoint x="1381.91" y="980.56" />
-              <mxPoint x="1466.54" y="980.56" />
-              <mxPoint x="1561.19" y="980.56" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel12_start" value="0..1" vertex="1" connectable="0" parent="rel12" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel12_end" value="0..N" vertex="1" connectable="0" parent="rel12" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel13" value="utilizada" edge="1" parent="1" source="CREDENCIAL" target="INTENTO_ACCESO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="930.03" y="1080.22" />
-              <mxPoint x="1288.42" y="1048.7" />
-              <mxPoint x="1588.94" y="1010.56" />
-              <mxPoint x="1604.67" y="1008.57" />
-              <mxPoint x="1621.1" y="1006.3" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel13_start" value="0..1" vertex="1" connectable="0" parent="rel13" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rel13_end" value="0..N" vertex="1" connectable="0" parent="rel13" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
+        <mxCell id="rel13" value="" style="curved=1;rounded=1;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;exitX=1;exitY=0.45;entryX=0;entryY=0.57;" edge="1" parent="1" source="CREDENCIAL" target="INTENTO_ACCESO">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram name="BD inicial implementada" id="BD-inicial-implementada">
-    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1200" pageHeight="700" math="0" shadow="0">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1000" pageHeight="600" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title" value="&lt;b&gt;SmartConnect - BD inicial implementada&lt;/b&gt;" vertex="1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;">
-          <mxGeometry x="60" y="30" width="1000" height="50" as="geometry" />
+        <mxCell id="PERSONA" value="PERSONA" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="172" height="231" as="geometry" />
         </mxCell>
-        <mxCell id="intro" value="Dos CRUD: Personas y Terrenos. Cada terreno tiene exactamente un administrador.&lt;br&gt;Una persona puede administrar cero, uno o varios terrenos." vertex="1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;">
-          <mxGeometry x="60" y="90" width="1000" height="70" as="geometry" />
+        <mxCell id="PERSONA_campos" value="id: int PK&lt;br&gt;codigo: string UK&lt;br&gt;nombres: string&lt;br&gt;apellidos: string&lt;br&gt;email: string UK" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="PERSONA">
+          <mxGeometry y="38" width="172" height="193" as="geometry" />
         </mxCell>
-        <mxCell id="PERSONA" value="PERSONA" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#dae8fc;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="80" y="230" width="300" height="250" as="geometry" />
+        <mxCell id="TERRENO" value="TERRENO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#dbeafe;swimlaneFillColor=#ffffff;strokeColor=#94a3b8;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="520" y="120" width="232" height="231" as="geometry" />
         </mxCell>
-        <mxCell id="PERSONA_fields" value="bigint id PK&lt;br&gt;string codigo UK&lt;br&gt;string nombres&lt;br&gt;string apellidos&lt;br&gt;string email UK" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="PERSONA">
-          <mxGeometry x="0" y="38" width="300" height="212" as="geometry" />
+        <mxCell id="TERRENO_campos" value="id: int PK&lt;br&gt;codigo: string UK&lt;br&gt;nombre: string&lt;br&gt;direccion: string&lt;br&gt;administrador_id: int FK" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;spacingTop=2;fontSize=15;fontStyle=0;fontColor=#0f172a;" vertex="1" parent="TERRENO">
+          <mxGeometry y="38" width="232" height="193" as="geometry" />
         </mxCell>
-        <mxCell id="TERRENO" value="TERRENO" style="swimlane;html=1;startSize=38;horizontal=1;container=1;collapsible=0;rounded=0;fillColor=#dae8fc;swimlaneFillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=16;fontStyle=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="720" y="230" width="350" height="250" as="geometry" />
-        </mxCell>
-        <mxCell id="TERRENO_fields" value="bigint id PK&lt;br&gt;string codigo UK&lt;br&gt;string nombre&lt;br&gt;string direccion&lt;br&gt;bigint administrador_id FK" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;spacing=10;fontSize=15;fontStyle=0;" vertex="1" parent="TERRENO">
-          <mxGeometry x="0" y="38" width="350" height="212" as="geometry" />
-        </mxCell>
-        <mxCell id="administra" value="administra" edge="1" parent="1" source="PERSONA" target="TERRENO" style="curved=1;rounded=1;html=1;endArrow=none;startArrow=none;strokeColor=#64748b;fontColor=#334155;fontSize=13;labelBackgroundColor=#ffffff;">
+        <mxCell id="rel0" value="" style="curved=1;rounded=1;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;startSize=12;endSize=12;strokeColor=#64748b;" edge="1" parent="1" source="PERSONA" target="TERRENO">
           <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="administra_start" value="1" vertex="1" connectable="0" parent="administra" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="-0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="administra_end" value="0..N" vertex="1" connectable="0" parent="administra" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;labelBackgroundColor=#ffffff;">
-          <mxGeometry x="0.85" y="-14" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="note" value="PROTECT: no se elimina una persona mientras administre terrenos.&lt;br&gt;Reasignar los terrenos antes de eliminarla." vertex="1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;">
-          <mxGeometry x="80" y="540" width="1000" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
