@@ -90,7 +90,7 @@ petición → config/urls.py → views.py → serializers.py → models.py → S
 
 ## 6. Probar ambos CRUD en Apidog
 
-Sigan [docs/APIDOG.md](docs/APIDOG.md). Incluye ejemplos, orden de ejecución y resultados esperados. El archivo `docs/SmartConnect.postman_collection.json` contiene 18 peticiones para importar en Apidog como colección Postman v2.1.
+El archivo [apidog/SmartConnect.postman_collection.json](apidog/SmartConnect.postman_collection.json) contiene 18 peticiones para importar en Apidog como colección Postman v2.1 (`Settings > Import Data > Postman`). Ejecútenlas en orden contra el servidor local, con `base_url` igual a `http://127.0.0.1:8000`; cada descripción indica el estado esperado.
 
 | Petición | Operación | Respuesta correcta |
 | --- | --- | --- |

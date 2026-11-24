@@ -2,7 +2,7 @@
   "info": {
     "name": "SmartConnect - Entrega 1 - Personas y Terrenos",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Importar en Apidog como Postman v2.1. Ejecutar en orden. Si la importación no conserva variables o scripts, copiar los id de las respuestas como indica docs/APIDOG.md."
+    "description": "Importar en Apidog como Postman v2.1. Ejecutar en orden. Si la importación no conserva variables o scripts, copiar los id de las respuestas como indica README.md."
   },
   "variable": [
     {

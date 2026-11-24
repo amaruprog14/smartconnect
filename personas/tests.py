@@ -9,7 +9,7 @@ from terrenos.models import Terreno
 class EntregaUnoTests(APITestCase):
     def test_coleccion_completa_y_persistencia(self):
         """Ejecuta las mismas 18 peticiones que se importan en Apidog."""
-        path = Path(__file__).resolve().parent.parent / 'docs/SmartConnect.postman_collection.json'
+        path = Path(__file__).resolve().parent.parent / 'apidog/SmartConnect.postman_collection.json'
         collection = json.loads(path.read_text(encoding='utf-8'))
         variables = {}
         for item in collection['item']:
