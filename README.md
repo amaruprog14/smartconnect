@@ -106,7 +106,7 @@ El patrón es igual para `/api/terrenos/`. Un cuerpo inválido devuelve 400.
 
 ## 7. Diagrama y decisiones de diseño
 
-Lean [docs/DISENO.md](docs/DISENO.md). El diagrama v1 abarca el contexto completo; la BD inicial implementa únicamente Persona y Terreno. El resto está propuesto para futuras clases y debe revisarse con el docente.
+El diagrama v1 abarca el contexto completo; la BD inicial implementa únicamente Persona y Terreno. El resto está propuesto para futuras clases y debe revisarse con el docente.
 
 La relación ya implementada es:
 
