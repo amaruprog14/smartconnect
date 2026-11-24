@@ -1,9 +1,14 @@
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from config.mixins import EliminacionProtegidaMixin
-from config.permissions import ViviendaPermission, exigir_administracion_terreno, filtrar_viviendas
+from config.permissions import (
+    ParticipacionPermission, ViviendaPermission, exigir_administracion_terreno, filtrar_viviendas,
+)
 from .models import Vivienda
-from .serializers import ViviendaSerializer
+from .serializers import ParticipacionViviendaSerializer, ViviendaSerializer
 
 class ViviendaViewSet(EliminacionProtegidaMixin, ModelViewSet):
     queryset = Vivienda.objects.select_related('terreno').order_by('id')
@@ -26,3 +31,27 @@ class ViviendaViewSet(EliminacionProtegidaMixin, ModelViewSet):
         terreno = serializer.validated_data.get('terreno', serializer.instance.terreno)
         exigir_administracion_terreno(self.request.user, terreno)
         serializer.save()
+
+    @action(
+        detail=True,
+        methods=['get', 'post'],
+        permission_classes=[IsAuthenticated, ParticipacionPermission],
+        serializer_class=ParticipacionViviendaSerializer,
+    )
+    def participaciones(self, request, pk=None):
+        """Operación del negocio: listar o asignar personas a esta vivienda.
+
+        Orden de las reglas: get_object() aplica ParticipacionPermission (403 sin
+        autoridad), luego el serializer valida datos y duplicados (400) y solo
+        entonces se guarda. Ningún rechazo modifica la BD.
+        """
+        vivienda = self.get_object()
+        if request.method == 'GET':
+            participaciones = vivienda.participaciones.select_related('persona')
+            return Response(self.get_serializer(participaciones, many=True).data)
+        serializer = ParticipacionViviendaSerializer(
+            data=request.data, context={**self.get_serializer_context(), 'vivienda': vivienda},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(vivienda=vivienda)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
