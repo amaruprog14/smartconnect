@@ -131,7 +131,17 @@ erDiagram
 
 El diagrama completo está en la carpeta `er/`: [PNG](er/diagrama_er_v1.png) y [SVG ampliable](er/diagrama_er_v1.svg). El archivo [DOT](er/diagrama_er_v1.dot) conserva la fuente de la imagen.
 
-También se incluye [el archivo nativo de draw.io](er/SmartConnect_ER_v1.drawio), con dos pestañas editables: el ER completo previsto y la BD inicial implementada.
+También se incluye [el archivo nativo de draw.io](er/SmartConnect_ER_v1.drawio), con dos pestañas editables: el ER completo previsto y la BD inicial implementada. Notación: `||` exactamente uno, `|o` cero o uno y `o<` cero o varios.
+
+Para regenerar las imágenes desde el DOT se necesita [Graphviz](https://graphviz.org/download/) (`dot`):
+
+```powershell
+dot -Tpng -Gdpi=225 er/diagrama_er_v1.dot -o er/diagrama_er_v1.png
+dot -Tsvg er/diagrama_er_v1.dot -o er/diagrama_er_v1.svg
+.\.venv\Scripts\python.exe er/limpiar_svg.py er/diagrama_er_v1.svg
+```
+
+El último paso quita del SVG las etiquetas transparentes de las relaciones, que solo sirven para distribuir el diagrama.
 
 ## 8. Trabajar como pareja y dejar evidencia real
 
