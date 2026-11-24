@@ -85,6 +85,8 @@ class Command(BaseCommand):
                 'tipo': tipo, 'vivienda': vivienda, 'activo': True,
             })
 
+        if options['verbosity'] == 0:
+            return
         for codigo, terreno in terrenos.items():
             self.stdout.write(f'{codigo}: id={terreno.pk}, administrador={terreno.administrador}')
         self.stdout.write(self.style.SUCCESS(
