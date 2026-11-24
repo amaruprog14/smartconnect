@@ -19,3 +19,35 @@ class Vivienda(models.Model):
 
     def __str__(self):
         return f'{self.identificador} ({self.terreno})'
+
+
+class ParticipacionVivienda(models.Model):
+    """Vínculo actual de una persona con una vivienda y su rol en ella.
+
+    El rol vive aquí y no en Persona: alguien puede ser propietario en una
+    vivienda y arrendatario en otra.
+    """
+
+    class Rol(models.TextChoices):
+        PROPIETARIO_ADMIN = 'PROPIETARIO_ADMIN', 'Propietario administrador'
+        PROPIETARIO = 'PROPIETARIO', 'Propietario'
+        ARRENDATARIO = 'ARRENDATARIO', 'Arrendatario'
+        CONVIVIENTE = 'CONVIVIENTE', 'Conviviente'
+
+    # CASCADE: si se elimina la persona, sus vínculos actuales dejan de tener sentido.
+    persona = models.ForeignKey('personas.Persona', on_delete=models.CASCADE, related_name='participaciones')
+    # PROTECT: no se elimina una vivienda mientras tenga personas vinculadas.
+    vivienda = models.ForeignKey(Vivienda, on_delete=models.PROTECT, related_name='participaciones')
+    rol = models.CharField(max_length=20, choices=Rol.choices)
+    activa = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = 'participación en vivienda'
+        verbose_name_plural = 'participaciones en viviendas'
+        constraints = [
+            models.UniqueConstraint(fields=['persona', 'vivienda'], name='participacion_unica_persona_vivienda'),
+        ]
+
+    def __str__(self):
+        return f'{self.persona} - {self.get_rol_display()} en {self.vivienda}'

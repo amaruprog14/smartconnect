@@ -7,5 +7,5 @@ class ViviendaViewSet(EliminacionProtegidaMixin, ModelViewSet):
     queryset = Vivienda.objects.select_related('terreno').order_by('id')
     serializer_class = ViviendaSerializer
     mensaje_protegido = (
-        'Esta vivienda tiene puntos de acceso asociados. Elimínalos o desvincúlalos antes de eliminarla.'
+        'Esta vivienda tiene puntos de acceso o participaciones. Elimínalos antes de eliminar la vivienda.'
     )
