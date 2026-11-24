@@ -1,6 +1,5 @@
 # SmartConnect · Primera entrega · Guía desde cero
 
-Esta base acompaña los tres PDF de TI3041. La primera entrega requiere diagrama ER v1 del sistema previsto, BD inicial con datos relacionados, un CRUD por integrante probado en Apidog y evidencia real del trabajo en Git. Esta propuesta usa Personas y Terrenos para una pareja. Deben entenderla, adaptarla y explicar sus decisiones.
 
 ## 1. Qué van a construir
 
@@ -208,9 +207,6 @@ Login, JWT, permisos de apertura, comprobación de proximidad, uso físico de RF
 | DELETE devuelve 409 | La persona administra terrenos; reasignen esos terrenos antes de eliminarla |
 | La segunda ejecución de la colección falla al crear | Una ejecución anterior pudo dejar `PER-PRUEBA` o `TER-PRUEBA`; eliminen solo esos registros de práctica, terreno primero |
 
-## Referencias
-
-- Material entregado: clase 1, páginas 5-12; clase 2, páginas 7-12; problemática, páginas 1-2.
 - [Instalación oficial de Django 5.2](https://docs.djangoproject.com/en/5.2/intro/install/).
 - [Modelos y migraciones en Django](https://docs.djangoproject.com/en/5.2/intro/tutorial02/).
 - [Compatibilidad de DRF 3.16](https://www.django-rest-framework.org/community/3.16-announcement/).
