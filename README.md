@@ -129,9 +129,9 @@ erDiagram
     }
 ```
 
-El diagrama completo está en [PNG](docs/diagrama_er_v1.png) y [SVG ampliable](docs/diagrama_er_v1.svg). La versión editable está en `docs/diagrama_er_v1.mmd`; su contenido también aparece en DISENO.md para que GitHub pueda mostrarlo. El archivo DOT conserva la fuente de la imagen.
+El diagrama completo está en la carpeta `er/`: [PNG](er/diagrama_er_v1.png) y [SVG ampliable](er/diagrama_er_v1.svg). El archivo [DOT](er/diagrama_er_v1.dot) conserva la fuente de la imagen.
 
-También se incluye [el archivo nativo de draw.io](docs/SmartConnect_ER_v1.drawio), con dos pestañas editables: el ER completo previsto y la BD inicial implementada. Para subir el proyecto y continuarlo en otro PC, sigan [el tutorial de GitHub](docs/GITHUB_OTRO_PC.txt).
+También se incluye [el archivo nativo de draw.io](er/SmartConnect_ER_v1.drawio), con dos pestañas editables: el ER completo previsto y la BD inicial implementada.
 
 ## 8. Trabajar como pareja y dejar evidencia real
 
