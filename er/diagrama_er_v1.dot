@@ -1,0 +1,29 @@
+digraph ER {
+graph [rankdir=LR, bgcolor="white", pad="0.5", nodesep="0.45", ranksep="1.1", fontname="Arial"];
+node [shape=plain, fontname="Arial"];
+// Las etiquetas de las relaciones solo ayudan a distribuir el diagrama: son transparentes.
+edge [fontname="Arial", fontsize=10, color="#64748b", fontcolor="transparent", dir=both, arrowsize=1.1];
+PERSONA [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#94a3b8"><TR><TD BGCOLOR="#dbeafe"><B>PERSONA</B></TD></TR><TR><TD ALIGN="LEFT">id: int PK</TD></TR><TR><TD ALIGN="LEFT">codigo: string UK</TD></TR><TR><TD ALIGN="LEFT">nombres: string</TD></TR><TR><TD ALIGN="LEFT">apellidos: string</TD></TR><TR><TD ALIGN="LEFT">email: string UK</TD></TR><TR><TD ALIGN="LEFT">usuario_id: int FK UK null</TD></TR></TABLE>>];
+TERRENO [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#94a3b8"><TR><TD BGCOLOR="#dbeafe"><B>TERRENO</B></TD></TR><TR><TD ALIGN="LEFT">id: int PK</TD></TR><TR><TD ALIGN="LEFT">codigo: string UK</TD></TR><TR><TD ALIGN="LEFT">nombre: string</TD></TR><TR><TD ALIGN="LEFT">direccion: string</TD></TR><TR><TD ALIGN="LEFT">administrador_id: int FK</TD></TR></TABLE>>];
+VIVIENDA [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#94a3b8"><TR><TD BGCOLOR="#dbeafe"><B>VIVIENDA</B></TD></TR><TR><TD ALIGN="LEFT">id: int PK</TD></TR><TR><TD ALIGN="LEFT">terreno_id: int FK</TD></TR><TR><TD ALIGN="LEFT">identificador: string</TD></TR><TR><TD ALIGN="LEFT">tipo: string</TD></TR></TABLE>>];
+PARTICIPACION_VIVIENDA [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#94a3b8"><TR><TD BGCOLOR="#dbeafe"><B>PARTICIPACION_VIVIENDA</B></TD></TR><TR><TD ALIGN="LEFT">id: int PK</TD></TR><TR><TD ALIGN="LEFT">persona_id: int FK</TD></TR><TR><TD ALIGN="LEFT">vivienda_id: int FK</TD></TR><TR><TD ALIGN="LEFT">rol: string</TD></TR><TR><TD ALIGN="LEFT">activa: boolean</TD></TR></TABLE>>];
+TRABAJADOR_TERRENO [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#94a3b8"><TR><TD BGCOLOR="#f1f5f9"><B>TRABAJADOR_TERRENO</B></TD></TR><TR><TD ALIGN="LEFT">id: int PK</TD></TR><TR><TD ALIGN="LEFT">persona_id: int FK</TD></TR><TR><TD ALIGN="LEFT">terreno_id: int FK</TD></TR><TR><TD ALIGN="LEFT">funcion: string</TD></TR><TR><TD ALIGN="LEFT">activo: boolean</TD></TR></TABLE>>];
+CREDENCIAL [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#94a3b8"><TR><TD BGCOLOR="#f1f5f9"><B>CREDENCIAL</B></TD></TR><TR><TD ALIGN="LEFT">id: int PK</TD></TR><TR><TD ALIGN="LEFT">uid: string UK</TD></TR><TR><TD ALIGN="LEFT">persona_id: int FK</TD></TR><TR><TD ALIGN="LEFT">estado: string</TD></TR></TABLE>>];
+PUNTO_ACCESO [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#94a3b8"><TR><TD BGCOLOR="#dbeafe"><B>PUNTO_ACCESO</B></TD></TR><TR><TD ALIGN="LEFT">id: int PK</TD></TR><TR><TD ALIGN="LEFT">terreno_id: int FK</TD></TR><TR><TD ALIGN="LEFT">vivienda_id: int FK null</TD></TR><TR><TD ALIGN="LEFT">nombre: string</TD></TR><TR><TD ALIGN="LEFT">tipo: string</TD></TR><TR><TD ALIGN="LEFT">activo: boolean</TD></TR></TABLE>>];
+AUTORIZACION_ACCESO [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#94a3b8"><TR><TD BGCOLOR="#f1f5f9"><B>AUTORIZACION_ACCESO</B></TD></TR><TR><TD ALIGN="LEFT">id: int PK</TD></TR><TR><TD ALIGN="LEFT">persona_id: int FK</TD></TR><TR><TD ALIGN="LEFT">punto_acceso_id: int FK</TD></TR><TR><TD ALIGN="LEFT">activa: boolean</TD></TR></TABLE>>];
+INTENTO_ACCESO [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#94a3b8"><TR><TD BGCOLOR="#f1f5f9"><B>INTENTO_ACCESO</B></TD></TR><TR><TD ALIGN="LEFT">id: int PK</TD></TR><TR><TD ALIGN="LEFT">punto_acceso_id: int FK</TD></TR><TR><TD ALIGN="LEFT">persona_id: int FK null</TD></TR><TR><TD ALIGN="LEFT">credencial_id: int FK null</TD></TR><TR><TD ALIGN="LEFT">medio: string</TD></TR><TR><TD ALIGN="LEFT">uid_recibido: string null para APP</TD></TR><TR><TD ALIGN="LEFT">fecha_hora: datetime</TD></TR><TR><TD ALIGN="LEFT">resultado: string</TD></TR><TR><TD ALIGN="LEFT">motivo: string</TD></TR><TR><TD ALIGN="LEFT">estado_dispositivo: string</TD></TR><TR><TD ALIGN="LEFT">contexto_proximidad: string</TD></TR></TABLE>>];
+PERSONA -> TERRENO [label="administra", arrowtail=teetee, arrowhead=crowodot];
+TERRENO -> VIVIENDA [label="contiene", arrowtail=teetee, arrowhead=crowodot];
+PERSONA -> PARTICIPACION_VIVIENDA [label="participa", arrowtail=teetee, arrowhead=crowodot];
+VIVIENDA -> PARTICIPACION_VIVIENDA [label="tiene", arrowtail=teetee, arrowhead=crowodot];
+PERSONA -> TRABAJADOR_TERRENO [label="trabaja", arrowtail=teetee, arrowhead=crowodot];
+TERRENO -> TRABAJADOR_TERRENO [label="emplea", arrowtail=teetee, arrowhead=crowodot];
+PERSONA -> CREDENCIAL [label="posee", arrowtail=teetee, arrowhead=crowodot];
+TERRENO -> PUNTO_ACCESO [label="contiene", arrowtail=teetee, arrowhead=crowodot];
+VIVIENDA -> PUNTO_ACCESO [label="vincula opcionalmente", arrowtail=teeodot, arrowhead=crowodot];
+PERSONA -> AUTORIZACION_ACCESO [label="recibe", arrowtail=teetee, arrowhead=crowodot];
+PUNTO_ACCESO -> AUTORIZACION_ACCESO [label="habilita", arrowtail=teetee, arrowhead=crowodot];
+PUNTO_ACCESO -> INTENTO_ACCESO [label="registra", arrowtail=teetee, arrowhead=crowodot];
+PERSONA -> INTENTO_ACCESO [label="identificada", arrowtail=teeodot, arrowhead=crowodot];
+CREDENCIAL -> INTENTO_ACCESO [label="utilizada", arrowtail=teeodot, arrowhead=crowodot];
+}
