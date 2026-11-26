@@ -59,6 +59,26 @@ class ViviendasCrudTests(APITestCase):
         self.assertEqual(ids(cliente(e.u_diego).get('/api/viviendas/')), [e.v1.pk, e.v3.pk])
         self.assertEqual(cliente(e.u_sofia).get('/api/viviendas/').data, [])
 
+    def test_filtros_del_listado_respetan_el_alcance(self):
+        e = self.e
+        casa2 = Vivienda.objects.create(terreno=e.t2, identificador='Casa 1', tipo='CASA')
+        self.assertEqual(ids(self.ana.get('/api/viviendas/')), [e.v1.pk, casa2.pk])
+        self.assertEqual(ids(self.ana.get(f'/api/viviendas/?terreno={e.t2.pk}')), [casa2.pk])
+        self.assertEqual(ids(self.ana.get('/api/viviendas/?identificador=Casa%201')), [e.v1.pk, casa2.pk])
+        self.assertEqual(ids(self.ana.get(f'/api/viviendas/?terreno={e.t1.pk}&identificador=Casa%201')), [e.v1.pk])
+        # Exacto: no hay coincidencias parciales ni sin distinguir mayúsculas.
+        self.assertEqual(self.ana.get('/api/viviendas/?identificador=Casa').data, [])
+        self.assertEqual(self.ana.get('/api/viviendas/?identificador=casa%201').data, [])
+        # Se aplican después del alcance: T3 existe, pero Ana no lo administra.
+        self.assertEqual(self.ana.get(f'/api/viviendas/?terreno={e.t3.pk}').data, [])
+        self.assertEqual(ids(cliente(e.u_diego).get('/api/viviendas/?identificador=Casa%201')), [e.v1.pk])
+        self.assertEqual(ids(cliente(e.u_staff).get(f'/api/viviendas/?terreno={e.t3.pk}')), [e.v3.pk])
+
+    def test_filtro_terreno_invalido_responde_400(self):
+        response = self.ana.get('/api/viviendas/?terreno=abc')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('terreno', response.data)
+
     def test_vivienda_ajena_responde_403_sin_cambios(self):
         diego = cliente(self.e.u_diego)
         # Diego participa en V1, pero su terreno lo administra Ana.
