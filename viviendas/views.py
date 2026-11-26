@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -21,7 +22,20 @@ class ViviendaViewSet(EliminacionProtegidaMixin, ModelViewSet):
     def get_queryset(self):
         # Solo se filtra el listado. En detalle se busca entre todos para responder 403, no 404.
         queryset = super().get_queryset()
-        return filtrar_viviendas(queryset, self.request.user) if self.action == 'list' else queryset
+        if self.action != 'list':
+            return queryset
+        queryset = filtrar_viviendas(queryset, self.request.user)
+        # Filtros opcionales, aplicados sobre lo que el usuario ya puede ver:
+        # ?terreno=<id> y ?identificador=<texto> (coincidencia exacta).
+        terreno = self.request.query_params.get('terreno')
+        if terreno is not None:
+            if not terreno.isdigit():
+                raise ValidationError({'terreno': 'Debe ser el id numérico de un terreno.'})
+            queryset = queryset.filter(terreno_id=int(terreno))
+        identificador = self.request.query_params.get('identificador')
+        if identificador is not None:
+            queryset = queryset.filter(identificador=identificador)
+        return queryset
 
     def perform_create(self, serializer):
         exigir_administracion_terreno(self.request.user, serializer.validated_data['terreno'])

@@ -59,6 +59,26 @@ class ViviendasCrudTests(APITestCase):
         self.assertEqual(ids(cliente(e.u_diego).get('/api/viviendas/')), [e.v1.pk, e.v3.pk])
         self.assertEqual(cliente(e.u_sofia).get('/api/viviendas/').data, [])
 
+    def test_filtros_del_listado_respetan_el_alcance(self):
+        e = self.e
+        casa2 = Vivienda.objects.create(terreno=e.t2, identificador='Casa 1', tipo='CASA')
+        self.assertEqual(ids(self.ana.get('/api/viviendas/')), [e.v1.pk, casa2.pk])
+        self.assertEqual(ids(self.ana.get(f'/api/viviendas/?terreno={e.t2.pk}')), [casa2.pk])
+        self.assertEqual(ids(self.ana.get('/api/viviendas/?identificador=Casa%201')), [e.v1.pk, casa2.pk])
+        self.assertEqual(ids(self.ana.get(f'/api/viviendas/?terreno={e.t1.pk}&identificador=Casa%201')), [e.v1.pk])
+        # Exacto: no hay coincidencias parciales ni sin distinguir mayúsculas.
+        self.assertEqual(self.ana.get('/api/viviendas/?identificador=Casa').data, [])
+        self.assertEqual(self.ana.get('/api/viviendas/?identificador=casa%201').data, [])
+        # Se aplican después del alcance: T3 existe, pero Ana no lo administra.
+        self.assertEqual(self.ana.get(f'/api/viviendas/?terreno={e.t3.pk}').data, [])
+        self.assertEqual(ids(cliente(e.u_diego).get('/api/viviendas/?identificador=Casa%201')), [e.v1.pk])
+        self.assertEqual(ids(cliente(e.u_staff).get(f'/api/viviendas/?terreno={e.t3.pk}')), [e.v3.pk])
+
+    def test_filtro_terreno_invalido_responde_400(self):
+        response = self.ana.get('/api/viviendas/?terreno=abc')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('terreno', response.data)
+
     def test_vivienda_ajena_responde_403_sin_cambios(self):
         diego = cliente(self.e.u_diego)
         # Diego participa en V1, pero su terreno lo administra Ana.
@@ -141,6 +161,29 @@ class ParticipacionViviendaTests(APITestCase):
             persona=self.e.sofia, vivienda=self.e.v1, rol='PROPIETARIO_ADMIN').exists())
         # Con ese rol, Sofia ya puede asignar en V1.
         self.assertEqual(self.asignar(self.e.u_sofia, self.e.ana, 'ARRENDATARIO').status_code, 201)
+
+    def test_staff_asigna_cualquier_rol_en_cualquier_vivienda(self):
+        for persona, rol in [(self.e.sofia, 'CONVIVIENTE'), (self.e.ana, 'PROPIETARIO')]:
+            response = self.asignar(self.e.u_staff, persona, rol)
+            self.assertEqual(response.status_code, 201, response.data)
+        # V3 no tiene participaciones: el staff no necesita participar en la vivienda.
+        response = cliente(self.e.u_staff).post(f'/api/viviendas/{self.e.v3.pk}/participaciones/', {
+            'persona': self.e.carla.pk, 'rol': 'ARRENDATARIO',
+        }, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            set(ParticipacionVivienda.objects.values_list('persona__codigo', 'vivienda__identificador', 'rol')),
+            {('P-DIEGO', 'Casa 1', 'PROPIETARIO_ADMIN'), ('P-CARLA', 'Casa 1', 'ARRENDATARIO'),
+             ('P-SOFIA', 'Casa 1', 'CONVIVIENTE'), ('P-ANA', 'Casa 1', 'PROPIETARIO'),
+             ('P-CARLA', 'Depto 101', 'ARRENDATARIO')},
+        )
+
+    def test_staff_tambien_respeta_duplicados_y_roles_validos(self):
+        self.antes = ParticipacionVivienda.objects.count()
+        self.assertRechazo(self.asignar(self.e.u_staff, self.e.carla, 'CONVIVIENTE'), 400)
+        self.assertRechazo(self.asignar(self.e.u_staff, self.e.sofia, 'VECINO'), 400)
+        self.assertEqual(ParticipacionVivienda.objects.get(persona=self.e.carla, vivienda=self.e.v1).rol,
+                         'ARRENDATARIO')
 
     def test_ver_participaciones_requiere_participar(self):
         self.assertEqual(cliente(self.e.u_ana).get(self.url).status_code, 403)

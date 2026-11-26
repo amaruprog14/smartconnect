@@ -1,3 +1,4 @@
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from config.mixins import EliminacionProtegidaMixin
@@ -17,3 +18,12 @@ class TerrenoViewSet(EliminacionProtegidaMixin, ModelViewSet):
         # Solo se filtra el listado. En detalle se busca entre todos para responder 403, no 404.
         queryset = super().get_queryset()
         return filtrar_terrenos(queryset, self.request.user) if self.action == 'list' else queryset
+
+    def perform_update(self, serializer):
+        # El administrador edita nombre, código y dirección, pero no puede ceder el terreno:
+        # cambiar quién lo administra es una decisión del staff. Repetir el actual se permite.
+        nuevo = serializer.validated_data.get('administrador')
+        if (not self.request.user.is_staff and nuevo is not None
+                and nuevo.pk != serializer.instance.administrador_id):
+            raise PermissionDenied('Solo el personal (staff) puede cambiar el administrador de un terreno.')
+        serializer.save()
