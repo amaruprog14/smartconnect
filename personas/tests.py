@@ -82,7 +82,7 @@ class ColeccionApidogTests(APITestCase):
                     variables[variable] = extraer(response.data, ruta)
             self.comprobar(item['name'][:2], response, variables)
 
-        self.assertEqual(total, 62)
+        self.assertEqual(total, 67)
         # La colección limpia lo que crea: quedan exactamente los datos de cargar_demo.
         self.assertEqual(conteos(), inicial)
         self.assertFalse(Persona.objects.filter(codigo='PER-PRUEBA').exists())
@@ -97,36 +97,58 @@ class ColeccionApidogTests(APITestCase):
             self.assertNotEqual(datos['access'], self.access_login)
         elif numero == '09':
             self.assertEqual([p['codigo'] for p in datos], ['PER-001'])
-        elif numero == '14':
+        elif numero == '11':
+            self.assertEqual([p['codigo'] for p in datos], ['PER-002'])
+        elif numero == '15':
             self.assertEqual(Persona.objects.get(pk=v['persona_id']).nombres, 'Camila')
-        elif numero == '19':
+        elif numero == '20':
             self.assertEqual(datos['administrador'], v['persona_id'])
             self.assertEqual(datos['administrador_nombre'], 'Camila Perez')
-        elif numero == '21':
+        elif numero == '22':
             terreno = Terreno.objects.get(pk=v['terreno_id'])
             self.assertEqual((terreno.nombre, terreno.direccion), ('Conjunto actualizado', 'Pasaje Ficticio 501'))
-        elif numero == '24':
-            self.assertEqual(Terreno.objects.get(pk=v['terreno_id']).administrador_id, v['ana_persona_id'])
         elif numero == '25':
-            self.assertEqual(datos[0]['identificador'], 'Casa 1')
-        elif numero == '30':
+            self.assertEqual(Terreno.objects.get(pk=v['terreno_id']).administrador_id, v['ana_persona_id'])
+        elif numero == '26':
+            # El filtro devuelve solo Casa 1 de TER-001, sin depender del orden de cargar_demo.
+            self.assertEqual([(d['identificador'], d['terreno_nombre']) for d in datos],
+                             [('Casa 1', 'Conjunto Los Aromos')])
+        elif numero == '29':
+            self.assertEqual([d['id'] for d in datos], [v['vivienda_id']])
+        elif numero == '32':
             vivienda = Vivienda.objects.get(pk=v['vivienda_id'])
             self.assertEqual((vivienda.identificador, vivienda.tipo), ('Casa A1', 'DEPARTAMENTO'))
-        elif numero == '34':
+        elif numero == '36':
             self.assertEqual(PuntoAcceso.objects.get(pk=v['punto_vivienda_id']).vivienda_id, v['vivienda_id'])
-        elif numero == '35':
+        elif numero == '37':
             self.assertIn('vivienda', datos)
-        elif numero == '39':
-            self.assertFalse(PuntoAcceso.objects.get(pk=v['punto_id']).activo)
         elif numero == '41':
+            self.assertFalse(PuntoAcceso.objects.get(pk=v['punto_id']).activo)
+        elif numero == '43':
             self.assertTrue(ParticipacionVivienda.objects.filter(
                 persona_id=v['persona_id'], vivienda_id=v['vivienda_demo_id'], rol='ARRENDATARIO', activa=True,
             ).exists())
-        elif numero == '46':
+        elif numero == '44':
+            self.assertTrue(ParticipacionVivienda.objects.filter(
+                persona_id=v['persona_id'], vivienda_id=v['vivienda_id'], rol='CONVIVIENTE', activa=True,
+            ).exists())
+        elif numero == '49':
             self.assertEqual(sorted(p['rol'] for p in datos),
                              ['ARRENDATARIO', 'ARRENDATARIO', 'CONVIVIENTE', 'PROPIETARIO_ADMIN'])
-        elif numero == '51':
+        elif numero == '50':
+            self.assertIn('PROPIETARIO_ADMIN', datos['detail'])
+            self.assertTrue(ParticipacionVivienda.objects.filter(
+                persona_id=v['diego_persona_id'], vivienda_id=v['vivienda_demo_id'], rol='PROPIETARIO_ADMIN',
+                activa=True,
+            ).exists())
+        elif numero == '55':
+            self.assertIn('administrador', datos['detail'])
+            self.assertEqual(Terreno.objects.get(pk=v['terreno_id']).administrador_id, v['ana_persona_id'])
+        elif numero == '56':
             self.assertEqual(datos, [])
+        elif numero == '59':
+            # CASCADE: no quedan participaciones de la persona de prueba.
+            self.assertFalse(ParticipacionVivienda.objects.filter(persona_id=v['persona_id']).exists())
 
 
 @override_settings(PASSWORD_HASHERS=HASHER_RAPIDO)

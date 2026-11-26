@@ -34,6 +34,10 @@
       "value": ""
     },
     {
+      "key": "diego_persona_id",
+      "value": ""
+    },
+    {
       "key": "sofia_persona_id",
       "value": ""
     },
@@ -422,7 +426,37 @@
           ]
         },
         {
-          "name": "11 - Crear persona y guardar persona_id",
+          "name": "11 - Diego ve solo su persona (guardar diego_persona_id)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_diego}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/",
+            "description": "Estado esperado: 200. Guarda el id de Diego para probar que no se borra al único PROPIETARIO_ADMIN de Casa 1."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"diego_persona_id\", pm.response.json()[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12 - Crear persona y guardar persona_id",
           "request": {
             "method": "POST",
             "header": [
@@ -465,7 +499,7 @@
           ]
         },
         {
-          "name": "12 - Detalle persona",
+          "name": "13 - Detalle persona",
           "request": {
             "method": "GET",
             "header": [
@@ -494,7 +528,7 @@
           ]
         },
         {
-          "name": "13 - PUT persona completa",
+          "name": "14 - PUT persona completa",
           "request": {
             "method": "PUT",
             "header": [
@@ -536,7 +570,7 @@
           ]
         },
         {
-          "name": "14 - PATCH solo nombres",
+          "name": "15 - PATCH solo nombres",
           "request": {
             "method": "PATCH",
             "header": [
@@ -578,7 +612,7 @@
           ]
         },
         {
-          "name": "15 - Rechazar codigo duplicado",
+          "name": "16 - Rechazar codigo duplicado",
           "request": {
             "method": "POST",
             "header": [
@@ -620,7 +654,7 @@
           ]
         },
         {
-          "name": "16 - Rechazar email invalido",
+          "name": "17 - Rechazar email invalido",
           "request": {
             "method": "POST",
             "header": [
@@ -668,7 +702,7 @@
       "description": "CRUD de terrenos como staff, protección y reasignación del administrador.",
       "item": [
         {
-          "name": "17 - Listar terrenos (staff)",
+          "name": "18 - Listar terrenos (staff)",
           "request": {
             "method": "GET",
             "header": [
@@ -697,7 +731,7 @@
           ]
         },
         {
-          "name": "18 - Crear terreno y guardar terreno_id",
+          "name": "19 - Crear terreno y guardar terreno_id",
           "request": {
             "method": "POST",
             "header": [
@@ -740,7 +774,7 @@
           ]
         },
         {
-          "name": "19 - Detalle terreno relacionado",
+          "name": "20 - Detalle terreno relacionado",
           "request": {
             "method": "GET",
             "header": [
@@ -769,7 +803,7 @@
           ]
         },
         {
-          "name": "20 - PUT terreno completo",
+          "name": "21 - PUT terreno completo",
           "request": {
             "method": "PUT",
             "header": [
@@ -811,7 +845,7 @@
           ]
         },
         {
-          "name": "21 - PATCH solo direccion",
+          "name": "22 - PATCH solo direccion",
           "request": {
             "method": "PATCH",
             "header": [
@@ -853,7 +887,7 @@
           ]
         },
         {
-          "name": "22 - Rechazar administrador inexistente",
+          "name": "23 - Rechazar administrador inexistente",
           "request": {
             "method": "POST",
             "header": [
@@ -895,7 +929,7 @@
           ]
         },
         {
-          "name": "23 - Proteger administrador con terrenos",
+          "name": "24 - Proteger administrador con terrenos",
           "request": {
             "method": "DELETE",
             "header": [
@@ -924,7 +958,7 @@
           ]
         },
         {
-          "name": "24 - Reasignar terreno a Ana",
+          "name": "25 - Reasignar terreno a Ana",
           "request": {
             "method": "PATCH",
             "header": [
@@ -972,7 +1006,7 @@
       "description": "CRUD de viviendas como Ana, administradora del terreno de prueba.",
       "item": [
         {
-          "name": "25 - Diego guarda su primera vivienda (vivienda_demo_id)",
+          "name": "26 - Diego busca Casa 1 (guardar vivienda_demo_id)",
           "request": {
             "method": "GET",
             "header": [
@@ -985,8 +1019,8 @@
                 "value": "Bearer {{access_diego}}"
               }
             ],
-            "url": "{{base_url}}/api/viviendas/",
-            "description": "Estado esperado: 200. Diego ve las viviendas donde participa y las de su terreno. La primera es Casa 1 de TER-001."
+            "url": "{{base_url}}/api/viviendas/?identificador=Casa%201",
+            "description": "Estado esperado: 200. Filtro exacto por identificador, dentro de lo que Diego puede ver: solo Casa 1 de TER-001."
           },
           "event": [
             {
@@ -1002,7 +1036,7 @@
           ]
         },
         {
-          "name": "26 - Crear vivienda y guardar vivienda_id",
+          "name": "27 - Crear vivienda y guardar vivienda_id",
           "request": {
             "method": "POST",
             "header": [
@@ -1045,7 +1079,7 @@
           ]
         },
         {
-          "name": "27 - Listar viviendas (Ana)",
+          "name": "28 - Listar viviendas (Ana)",
           "request": {
             "method": "GET",
             "header": [
@@ -1074,7 +1108,36 @@
           ]
         },
         {
-          "name": "28 - Detalle vivienda",
+          "name": "29 - Filtrar viviendas por terreno (Ana)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/?terreno={{terreno_id}}",
+            "description": "Estado esperado: 200. Solo la vivienda del terreno de prueba."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "30 - Detalle vivienda",
           "request": {
             "method": "GET",
             "header": [
@@ -1103,7 +1166,7 @@
           ]
         },
         {
-          "name": "29 - PUT vivienda completa",
+          "name": "31 - PUT vivienda completa",
           "request": {
             "method": "PUT",
             "header": [
@@ -1145,7 +1208,7 @@
           ]
         },
         {
-          "name": "30 - PATCH solo tipo",
+          "name": "32 - PATCH solo tipo",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1187,7 +1250,7 @@
           ]
         },
         {
-          "name": "31 - Rechazar identificador repetido en el terreno",
+          "name": "33 - Rechazar identificador repetido en el terreno",
           "request": {
             "method": "POST",
             "header": [
@@ -1229,7 +1292,7 @@
           ]
         },
         {
-          "name": "32 - Sofia no puede crear viviendas",
+          "name": "34 - Sofia no puede crear viviendas",
           "request": {
             "method": "POST",
             "header": [
@@ -1277,7 +1340,7 @@
       "description": "CRUD de puntos de acceso como Ana.",
       "item": [
         {
-          "name": "33 - Crear punto comun y guardar punto_id",
+          "name": "35 - Crear punto comun y guardar punto_id",
           "request": {
             "method": "POST",
             "header": [
@@ -1320,7 +1383,7 @@
           ]
         },
         {
-          "name": "34 - Crear punto de una vivienda y guardar punto_vivienda_id",
+          "name": "36 - Crear punto de una vivienda y guardar punto_vivienda_id",
           "request": {
             "method": "POST",
             "header": [
@@ -1363,7 +1426,7 @@
           ]
         },
         {
-          "name": "35 - Rechazar vivienda de otro terreno",
+          "name": "37 - Rechazar vivienda de otro terreno",
           "request": {
             "method": "POST",
             "header": [
@@ -1405,7 +1468,7 @@
           ]
         },
         {
-          "name": "36 - Listar puntos de acceso (Ana)",
+          "name": "38 - Listar puntos de acceso (Ana)",
           "request": {
             "method": "GET",
             "header": [
@@ -1434,7 +1497,7 @@
           ]
         },
         {
-          "name": "37 - Detalle punto de acceso",
+          "name": "39 - Detalle punto de acceso",
           "request": {
             "method": "GET",
             "header": [
@@ -1463,7 +1526,7 @@
           ]
         },
         {
-          "name": "38 - PUT punto completo",
+          "name": "40 - PUT punto completo",
           "request": {
             "method": "PUT",
             "header": [
@@ -1505,7 +1568,7 @@
           ]
         },
         {
-          "name": "39 - PATCH desactivar punto",
+          "name": "41 - PATCH desactivar punto",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1553,7 +1616,7 @@
       "description": "POST /api/viviendas/{id}/participaciones/. Diego es PROPIETARIO_ADMIN de Casa 1 (TER-001).",
       "item": [
         {
-          "name": "40 - Diego lista participaciones de Casa 1",
+          "name": "42 - Diego lista participaciones de Casa 1",
           "request": {
             "method": "GET",
             "header": [
@@ -1582,7 +1645,7 @@
           ]
         },
         {
-          "name": "41 - Diego asigna arrendataria (valida)",
+          "name": "43 - Diego asigna arrendataria (valida)",
           "request": {
             "method": "POST",
             "header": [
@@ -1624,7 +1687,49 @@
           ]
         },
         {
-          "name": "42 - Rechazar asignacion duplicada",
+          "name": "44 - Staff asigna conviviente en la vivienda de prueba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/viviendas/{{vivienda_id}}/participaciones/",
+            "description": "Estado esperado: 201. El staff asigna cualquier rol en cualquier vivienda, aunque no participe en ella.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": {{persona_id}},\n  \"rol\": \"CONVIVIENTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 201\", function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "45 - Rechazar asignacion duplicada",
           "request": {
             "method": "POST",
             "header": [
@@ -1666,7 +1771,7 @@
           ]
         },
         {
-          "name": "43 - Rechazar administrador del terreno",
+          "name": "46 - Rechazar administrador del terreno",
           "request": {
             "method": "POST",
             "header": [
@@ -1708,7 +1813,7 @@
           ]
         },
         {
-          "name": "44 - Rechazar PROPIETARIO_ADMIN sin ser staff",
+          "name": "47 - Rechazar PROPIETARIO_ADMIN sin ser staff",
           "request": {
             "method": "POST",
             "header": [
@@ -1750,7 +1855,7 @@
           ]
         },
         {
-          "name": "45 - Rechazar persona sin participacion",
+          "name": "48 - Rechazar persona sin participacion",
           "request": {
             "method": "POST",
             "header": [
@@ -1792,7 +1897,7 @@
           ]
         },
         {
-          "name": "46 - Verificar participaciones guardadas",
+          "name": "49 - Verificar participaciones guardadas",
           "request": {
             "method": "GET",
             "header": [
@@ -1819,6 +1924,35 @@
               }
             }
           ]
+        },
+        {
+          "name": "50 - Rechazar borrar al unico PROPIETARIO_ADMIN",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{diego_persona_id}}/",
+            "description": "Estado esperado: 409. Diego es el único PROPIETARIO_ADMIN activo de Casa 1: Casa 1 quedaría sin administrador. La BD no cambia."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
@@ -1827,7 +1961,7 @@
       "description": "Token válido, pero acción fuera del alcance: 403.",
       "item": [
         {
-          "name": "47 - Diego no edita un terreno ajeno",
+          "name": "51 - Diego no edita un terreno ajeno",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1869,7 +2003,7 @@
           ]
         },
         {
-          "name": "48 - Diego no edita una vivienda ajena",
+          "name": "52 - Diego no edita una vivienda ajena",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1911,7 +2045,7 @@
           ]
         },
         {
-          "name": "49 - Ana no edita otra persona",
+          "name": "53 - Ana no edita otra persona",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1953,7 +2087,7 @@
           ]
         },
         {
-          "name": "50 - Ana no elimina terrenos",
+          "name": "54 - Ana no elimina terrenos",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1982,7 +2116,49 @@
           ]
         },
         {
-          "name": "51 - Sofia ve una lista vacia de terrenos",
+          "name": "55 - Ana no cambia el administrador de su terreno",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_ana}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
+            "description": "Estado esperado: 403. Ana administra el terreno, pero solo el staff cambia el administrador. La BD no cambia.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"administrador\": {{sofia_persona_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "56 - Sofia ve una lista vacia de terrenos",
           "request": {
             "method": "GET",
             "header": [
@@ -2017,7 +2193,7 @@
       "description": "Elimina los datos de prueba. Los datos de cargar_demo se conservan.",
       "item": [
         {
-          "name": "52 - Proteger vivienda con puntos",
+          "name": "57 - Proteger vivienda con puntos y participaciones",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2031,7 +2207,7 @@
               }
             ],
             "url": "{{base_url}}/api/viviendas/{{vivienda_id}}/",
-            "description": "Estado esperado: 409. PROTECT: la vivienda aún tiene un punto de acceso."
+            "description": "Estado esperado: 409. PROTECT: la vivienda aún tiene un punto de acceso y una participación."
           },
           "event": [
             {
@@ -2046,7 +2222,7 @@
           ]
         },
         {
-          "name": "53 - Proteger terreno con viviendas",
+          "name": "58 - Proteger terreno con viviendas",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2075,7 +2251,65 @@
           ]
         },
         {
-          "name": "54 - Eliminar punto de la vivienda",
+          "name": "59 - Eliminar persona de prueba",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{persona_id}}/",
+            "description": "Estado esperado: 204. CASCADE: también elimina sus participaciones en Casa 1 y en la vivienda de prueba. No es PROPIETARIO_ADMIN de ninguna vivienda, así que se puede borrar."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "60 - Confirmar persona eliminada",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": "{{base_url}}/api/personas/{{persona_id}}/",
+            "description": "Estado esperado: 404. Ya no existe."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "61 - Eliminar punto de la vivienda",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2104,7 +2338,7 @@
           ]
         },
         {
-          "name": "55 - Eliminar punto comun",
+          "name": "62 - Eliminar punto comun",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2133,7 +2367,7 @@
           ]
         },
         {
-          "name": "56 - Confirmar punto eliminado",
+          "name": "63 - Confirmar punto eliminado",
           "request": {
             "method": "GET",
             "header": [
@@ -2162,7 +2396,7 @@
           ]
         },
         {
-          "name": "57 - Eliminar vivienda de prueba",
+          "name": "64 - Eliminar vivienda de prueba",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2191,7 +2425,7 @@
           ]
         },
         {
-          "name": "58 - Confirmar vivienda eliminada",
+          "name": "65 - Confirmar vivienda eliminada",
           "request": {
             "method": "GET",
             "header": [
@@ -2220,7 +2454,7 @@
           ]
         },
         {
-          "name": "59 - Eliminar terreno de prueba",
+          "name": "66 - Eliminar terreno de prueba",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2249,7 +2483,7 @@
           ]
         },
         {
-          "name": "60 - Confirmar terreno eliminado",
+          "name": "67 - Confirmar terreno eliminado",
           "request": {
             "method": "GET",
             "header": [
@@ -2263,64 +2497,6 @@
               }
             ],
             "url": "{{base_url}}/api/terrenos/{{terreno_id}}/",
-            "description": "Estado esperado: 404. Ya no existe."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Estado HTTP 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "61 - Eliminar persona de prueba",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access}}"
-              }
-            ],
-            "url": "{{base_url}}/api/personas/{{persona_id}}/",
-            "description": "Estado esperado: 204. También elimina su participación en Casa 1."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Estado HTTP 204\", function () { pm.response.to.have.status(204); });"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "62 - Confirmar persona eliminada",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access}}"
-              }
-            ],
-            "url": "{{base_url}}/api/personas/{{persona_id}}/",
             "description": "Estado esperado: 404. Ya no existe."
           },
           "event": [
