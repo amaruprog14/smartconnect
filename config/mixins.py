@@ -1,6 +1,14 @@
 from django.db.models.deletion import ProtectedError
 from rest_framework import status
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
+
+
+class Conflicto(APIException):
+    """409 para reglas de borrado que on_delete no expresa por sí solo."""
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = 'El registro no se puede eliminar en su estado actual.'
+    default_code = 'conflicto'
 
 
 class EliminacionProtegidaMixin:

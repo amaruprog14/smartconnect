@@ -242,6 +242,46 @@ class PersonasStaffTests(APITestCase):
         self.assertEqual(PuntoAcceso.objects.get(vivienda=casa1).nombre, 'Puerta Casa 1')
 
 
+class BorrarPropietarioAdminTests(APITestCase):
+    """Borrar una persona no puede dejar una vivienda sin PROPIETARIO_ADMIN activo."""
+
+    def setUp(self):
+        self.e = crear_escenario()
+        self.staff = cliente(self.e.u_staff)
+        # Gabriel no administra terrenos: el 409 solo puede venir de la regla de participaciones.
+        self.gabriel = Persona.objects.create(codigo='P-GABRIEL', nombres='Gabriel', apellidos='Mora',
+                                              email='gabriel@example.com')
+        ParticipacionVivienda.objects.create(persona=self.gabriel, vivienda=self.e.v3, rol='PROPIETARIO_ADMIN')
+        ParticipacionVivienda.objects.create(persona=self.gabriel, vivienda=self.e.v1, rol='CONVIVIENTE')
+
+    def test_unico_propietario_admin_responde_409_sin_cambios(self):
+        antes = (Persona.objects.count(), ParticipacionVivienda.objects.count())
+        response = self.staff.delete(f'/api/personas/{self.gabriel.pk}/')
+        self.assertEqual(response.status_code, 409)
+        self.assertIn('PROPIETARIO_ADMIN', response.data['detail'])
+        self.assertIn('Depto 101', response.data['detail'])
+        self.assertEqual((Persona.objects.count(), ParticipacionVivienda.objects.count()), antes)
+        self.assertTrue(self.gabriel.participaciones.filter(vivienda=self.e.v3, activa=True).exists())
+
+    def test_con_otro_propietario_admin_activo_se_elimina_en_cascada(self):
+        ParticipacionVivienda.objects.create(persona=self.e.carla, vivienda=self.e.v3, rol='PROPIETARIO_ADMIN')
+        response = self.staff.delete(f'/api/personas/{self.gabriel.pk}/')
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(Persona.objects.filter(pk=self.gabriel.pk).exists())
+        self.assertFalse(ParticipacionVivienda.objects.filter(persona_id=self.gabriel.pk).exists())
+        self.assertTrue(ParticipacionVivienda.objects.filter(persona=self.e.carla, vivienda=self.e.v3).exists())
+
+    def test_otro_propietario_admin_inactivo_no_cuenta(self):
+        ParticipacionVivienda.objects.create(persona=self.e.carla, vivienda=self.e.v3, rol='PROPIETARIO_ADMIN',
+                                             activa=False)
+        self.assertEqual(self.staff.delete(f'/api/personas/{self.gabriel.pk}/').status_code, 409)
+        self.assertTrue(Persona.objects.filter(pk=self.gabriel.pk).exists())
+
+    def test_participacion_propietario_admin_inactiva_no_bloquea(self):
+        self.gabriel.participaciones.filter(vivienda=self.e.v3).update(activa=False)
+        self.assertEqual(self.staff.delete(f'/api/personas/{self.gabriel.pk}/').status_code, 204)
+
+
 class AlcancePersonasTests(APITestCase):
     def setUp(self):
         self.e = crear_escenario()
