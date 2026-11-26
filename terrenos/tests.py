@@ -33,6 +33,35 @@ class AlcanceTerrenosTests(APITestCase):
         self.e.t1.refresh_from_db()
         self.assertEqual(self.e.t1.nombre, 'Terreno 1')
 
+    def test_administrador_no_cambia_el_administrador(self):
+        ana = cliente(self.e.u_ana)
+        url = f'/api/terrenos/{self.e.t1.pk}/'
+        completo = {'codigo': 'T1', 'nombre': 'Cambiado', 'direccion': 'Calle 99', 'administrador': self.e.diego.pk}
+        for metodo, datos in [('patch', {'administrador': self.e.diego.pk}), ('put', completo)]:
+            response = getattr(ana, metodo)(url, datos, format='json')
+            self.assertEqual(response.status_code, 403, metodo)
+            self.assertIn('administrador', response.data['detail'])
+        # No se guardó nada, ni siquiera los otros campos del PUT.
+        self.e.t1.refresh_from_db()
+        self.assertEqual((self.e.t1.administrador, self.e.t1.nombre, self.e.t1.direccion),
+                         (self.e.ana, 'Terreno 1', 'Calle 1'))
+
+    def test_administrador_puede_repetir_el_mismo_administrador(self):
+        response = cliente(self.e.u_ana).put(f'/api/terrenos/{self.e.t1.pk}/', {
+            'codigo': 'T1-B', 'nombre': 'Renombrado', 'direccion': 'Calle 10', 'administrador': self.e.ana.pk,
+        }, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.e.t1.refresh_from_db()
+        self.assertEqual((self.e.t1.codigo, self.e.t1.nombre, self.e.t1.direccion, self.e.t1.administrador),
+                         ('T1-B', 'Renombrado', 'Calle 10', self.e.ana))
+
+    def test_staff_cambia_el_administrador(self):
+        response = cliente(self.e.u_staff).patch(f'/api/terrenos/{self.e.t1.pk}/',
+                                                 {'administrador': self.e.diego.pk}, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.e.t1.refresh_from_db()
+        self.assertEqual(self.e.t1.administrador, self.e.diego)
+
     def test_crear_y_eliminar_solo_staff(self):
         nuevo = {'codigo': 'T9', 'nombre': 'Nuevo', 'direccion': 'Calle 9', 'administrador': self.e.ana.pk}
         ana = cliente(self.e.u_ana)

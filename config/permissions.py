@@ -4,8 +4,8 @@ JWT solo identifica la cuenta (request.user). Estas clases deciden qué puede
 hacer esa cuenta según su vínculo con el terreno o la vivienda:
 
 - is_staff: acceso completo a los cuatro maestros.
-- Administrador de un terreno: edita ese terreno y gestiona sus viviendas y
-  puntos de acceso.
+- Administrador de un terreno: edita ese terreno (sin cambiar su administrador)
+  y gestiona sus viviendas y puntos de acceso.
 - Persona con participación activa en una vivienda: ve esa vivienda y su terreno.
 - Asignar personas a una vivienda (ver ParticipacionPermission): el staff
   asigna cualquier rol en cualquier vivienda; el propietario administrador
@@ -117,7 +117,10 @@ class PersonaPermission(BasePermission):
 
 
 class TerrenoPermission(BasePermission):
-    """Ver: administrador o residente. Editar: administrador. Crear o eliminar: staff."""
+    """Ver: administrador o residente. Editar: administrador. Crear o eliminar: staff.
+
+    Cambiar el campo administrador también es solo del staff (TerrenoViewSet.perform_update).
+    """
 
     def has_permission(self, request, view):
         if request.user.is_staff or view.action not in ('create', 'destroy'):
