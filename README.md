@@ -18,8 +18,8 @@ API REST local para SmartConnect (Programación Back End, TI3041). Usa Django 5.
 
 | Integrante | Responsabilidades |
 | --- | --- |
-| Amaru Marin | [COMPLETAR] |
-| Sebastian Alzao | [COMPLETAR] |
+| Amaru Marin | Tester |
+| Sebastian Alzao | Programador |
 
 ## 2. Requisitos en Windows
 
@@ -496,4 +496,4 @@ No se suben `.venv`, `db.sqlite3`, `docs/`, contraseñas reales ni `__pycache__`
 ## 17. Entrega
 
 - Repositorio: <https://github.com/amaruprog14/smartconnect>
-- Hash del commit revisado: `[COMPLETAR con git rev-parse HEAD]`
+- Hash del commit revisado: pendiente; se agrega después de integrar los PR (`git rev-parse HEAD`).
