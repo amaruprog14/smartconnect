@@ -142,6 +142,29 @@ class ParticipacionViviendaTests(APITestCase):
         # Con ese rol, Sofia ya puede asignar en V1.
         self.assertEqual(self.asignar(self.e.u_sofia, self.e.ana, 'ARRENDATARIO').status_code, 201)
 
+    def test_staff_asigna_cualquier_rol_en_cualquier_vivienda(self):
+        for persona, rol in [(self.e.sofia, 'CONVIVIENTE'), (self.e.ana, 'PROPIETARIO')]:
+            response = self.asignar(self.e.u_staff, persona, rol)
+            self.assertEqual(response.status_code, 201, response.data)
+        # V3 no tiene participaciones: el staff no necesita participar en la vivienda.
+        response = cliente(self.e.u_staff).post(f'/api/viviendas/{self.e.v3.pk}/participaciones/', {
+            'persona': self.e.carla.pk, 'rol': 'ARRENDATARIO',
+        }, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            set(ParticipacionVivienda.objects.values_list('persona__codigo', 'vivienda__identificador', 'rol')),
+            {('P-DIEGO', 'Casa 1', 'PROPIETARIO_ADMIN'), ('P-CARLA', 'Casa 1', 'ARRENDATARIO'),
+             ('P-SOFIA', 'Casa 1', 'CONVIVIENTE'), ('P-ANA', 'Casa 1', 'PROPIETARIO'),
+             ('P-CARLA', 'Depto 101', 'ARRENDATARIO')},
+        )
+
+    def test_staff_tambien_respeta_duplicados_y_roles_validos(self):
+        self.antes = ParticipacionVivienda.objects.count()
+        self.assertRechazo(self.asignar(self.e.u_staff, self.e.carla, 'CONVIVIENTE'), 400)
+        self.assertRechazo(self.asignar(self.e.u_staff, self.e.sofia, 'VECINO'), 400)
+        self.assertEqual(ParticipacionVivienda.objects.get(persona=self.e.carla, vivienda=self.e.v1).rol,
+                         'ARRENDATARIO')
+
     def test_ver_participaciones_requiere_participar(self):
         self.assertEqual(cliente(self.e.u_ana).get(self.url).status_code, 403)
         self.assertEqual(cliente(self.e.u_staff).get(self.url).status_code, 200)
